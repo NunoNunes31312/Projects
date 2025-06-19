@@ -1,3 +1,3 @@
 # Projetos-java
 
-Aqui estão os projetos em java que fiz ao longo do curso de eng. Informática
+Hera are all the java projects I've done throughout my course in Computer Engineering 
