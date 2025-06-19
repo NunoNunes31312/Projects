@@ -1,0 +1,511 @@
+//Este foi o primeiro projeto que fiz, não ficou muito completo 
+
+
+
+
+
+import java.util.Scanner;
+public class Sumdoku {
+    public static void main(String[] args){
+        
+        /*
+         * @author Nuno Nunes 63731
+         * 
+         */
+
+          //2 Mensagens para PROF:
+
+         //- ia fazer com um colega mas ele n participou ent pus só o meu nome
+
+        //- Quando tento executar dá-me este erro Error: Could not find or load main class Sumdoku                                                                
+        //Caused by: java.lang.ClassNotFoundException: Sumdoku
+        //mesmo tentando na maquina virtual e com tudo no mesmo diretório, 
+        //a compilar não deu erro.
+        // só mais tarde é q vi q tinha de falar com o prof.
+        
+        
+        
+        if(Integer.parseInt(args[0])== 3){
+                //só fiz para o caso de size == 3
+                int size = Integer.parseInt(args[0]);
+                Scanner sc = new Scanner(System.in);
+                int maxAttempts = size*size;
+                SumdokuGrid grid = getBuiltInGrid(size);
+                GridGroups groups = getBuiltInGroups(size);
+
+                play(grid,groups,maxAttempts,sc);
+
+
+        }
+        else{// Caso argumentos !=3
+                int size;
+                Scanner sc = new Scanner(System.in);
+                
+                //pede tamanho da grelha
+                System.out.println("Leitura do puzzle");
+                do{
+                        System.out.print("Tamanho da grelha? ");
+                        size = sc.nextInt();
+                        System.out.println(" ");
+        
+                if(3 > size || size > 9){
+                         System.out.println("Valor Inválido. Tem de estar entre 3 e 9");
+                }
+                } while(3 > size || size > 9);
+                int maxAttempts = size*size;
+                boolean defines;
+                //chama-se o readgrid() dps readgroups()
+                do{
+                SumdokuGrid grid = readGrid(size, sc);  //estes validam o puzzle
+                GridGroups groups = readGroups(grid,sc);
+                defines = definesPuzzle(grid, groups); //aqui vê se define um puzzle
+                if(defines == false){
+                        System.out.println("Este par de grelha e grupos não definem um puzzle.");
+                        System.out.println(" Recomeçe a partir da grelha");
+                }
+                else{
+                        play(grid,groups,maxAttempts,sc); //dps começa o jogo
+                }
+                }while(defines == false);
+
+                
+        }
+
+        /*O método main, através da leitura de um argumento da linha de comandos, deve permitir jogar o 
+        jogo com um puzzle builtin para o tamanho escolhido, se este existir. Se não for fornecido 
+        qualquer argumento então o programa começa por ler a grelha e o conjunto de grupos do puzzle 
+        e depois permite jogar o jogo com esse puzzle. Em ambos os casos deve ser feita a validação de 
+        que se trata efetivamente de um puzzle e o número máximo de tentativas é o número de casas. */
+       
+    }
+public static int rowOfSquare(int square,int gridSize){
+        /*
+         * @param1 square - casa da grelha
+         * @param2 gridSize - tamanho da grelha
+         * @requires - 3<=gridSize && gridSize<=9
+         * @ensures 1<=resultado<=gridSize
+         * @return  numero da linha da casa
+         */
+        int row = (int)Math.ceil((double)square/gridSize);
+        return row;
+        //e calculam, respetivamente, a linha e a coluna de uma casa de uma grelha
+        //quadrada, dado o seu tamanho
+}
+public static int columnOfSquare(int square, int gridSize){
+        /*
+         * @param1 square - casa da grelha
+         * @param2 gridSize - tamanho da grelha
+         * @requires - 3<=gridSize && gridSize<=9
+         * @ensures 1<=resultado<=gridSize
+         * @return  numero da coluna da casa
+         */
+        int column;
+        if(square%gridSize==0){
+             column=gridSize;
+        }
+        else{
+                column=square%gridSize;
+        }
+        return column;
+}
+
+public static boolean isValidForPuzzle(SumdokuGrid grid){
+        /*
+         * @param Sumdoku grid - grelha com a resposta 
+         * @return  se a grelha é válida ou não
+         */
+         /*que, dado um objeto grid do tipo SumdokuGrid verifica se é 
+       válido para um puzzle, i.e., grid não é null e todos os números entre 1 e grid.size() ocorrem 
+       em cada linha e coluna de grid. */
+       if (grid == null){
+        return false;
+       }
+       int n = grid.size();
+       boolean fill = true;
+       int soma = 0;
+
+       for(int i=1;i<=n;i++){
+          for(int p=1;p<=n;p++){
+                fill = grid.isFilled(n,p);
+                if (fill == false){
+                        return false; //ver se tem nºs preenchidos
+                }
+                else{
+                        soma += grid.value(i,p);
+                        if(soma!=(n*(n+1)/2)){
+                                return false; //vê se a soma de cada linha dá o valor certo
+                        }                     // n(n+1)/2 = 1+2+3+4+(...)+n
+                } 
+          }     
+       }
+       return true;
+}
+public static boolean isValidGroupsForPuzzle(GridGroups groups){
+        /*
+         * @param gridGroups- grupos da grelha
+         * @return  se os grupos é válida ou não
+         */
+
+         /*que, dado um objeto groups do tipo GridGroups verifica se é 
+       válido para um puzzle, i.e., groups não é null, todas as casas da grelha pertencem a um dos grupos 
+       e não há grupos sem elementos. */
+       int n = groups.gridSize();
+       if(groups == null){
+        return false;
+       }
+       int gsize = groups.gridSize();      
+       if(!(3<=gsize && gsize<=9)){
+        return false;
+       }
+       int numgroups = groups.numberOfGroups();
+       int gruposcheck = 0;//0b000000000;
+       for(int i=1;i<=n;i++){
+        for(int p=1;i<=n;p++){
+                int gnum= groups.groupOfSquare(i,p);
+                if(gnum==0){
+                        return false;
+                }
+                else{
+                        gnum=(int)(Math.pow(2,gnum-1));
+                        gruposcheck|=gnum; //faz ou para colocar o bit a 1 ex:gnum=3 ficaria 4 ou 0b000000100
+                        
+                }
+        }
+       }
+       if(gruposcheck!=(Math.pow(2,numgroups)-1)){//ex: 4 grupos, ent tem de dar 0b1111 - 15
+        return false;
+       }
+       return true;
+} 
+      
+
+public static boolean definesPuzzle(SumdokuGrid grid,GridGroups groups){
+        /*
+         * @param Sumdoku grid - Sumdoku grid - grelha com a resposta 
+         * @param gridGroups- grupos da grelha
+         * @return se a grelha e os grupos formam um puzzle
+         */
+        if(groups.gridSize()!=grid.size()){
+                return false;
+        }
+        SumdokuSolver solver = new SumdokuSolver(grid,groups);
+        int sol = solver.howManySolutions(2);
+        if(sol==1){return true;}
+        else{return false;}
+        /*que dado objetos de tipos SumdokuGrid e GridGroups, que se 
+        assumem ser válidos para um puzzle, verifica se juntos definem um puzzle Sumdoku, i.e., 
+        concordam nos tamanhos da grelha e existe apenas uma solução. */
+}
+
+public static String cluesToString(SumdokuGrid grid,GridGroups groups){
+        /*
+         * @param Sumdoku grid - Sumdoku grid - grelha com a resposta 
+         * @param gridGroups- grupos da grelha
+         * @return o total da soma dos elementos de cada grupo
+         */
+        StringBuilder sb = new StringBuilder();
+        int numgroups = groups.numberOfGroups();
+        sb.append("Soma das casas: ");
+        int n=grid.size();
+        for(int j=1;j<=numgroups;j++){
+                for(int p=1;p<=n;p++){
+                        int sum=0;
+                        for(int i=1;i<=n;i++){
+                                int gnum=groups.groupOfSquare(i,p);//grupo e valor de cada quadrado
+                                int valor=grid.value(i,p);
+                                
+                                if(gnum==j){
+                                        sum+=valor;
+                                }
+                        }
+                        sb.append("G"+j+"="+sum);
+                }
+        }
+        sb.append("\n");
+        String output = sb.toString();
+        return output;
+        /*que dado objetos de tipos SumdokuGrid e GridGroups, que se 
+        assumem ser válidos e definir um puzzle, retorna uma String com uma representação textual das 
+        pistas do puzzle, ou seja, quanto somam as casas de cada um dos grupos. A representação textual 
+        pretendida pode ser vista nos exemplos fornecidos no final deste documento */
+}
+
+
+public static SumdokuGrid readGrid(int size,Scanner sc){
+        /*
+         * @param size - tamanho da grelha
+         * @param sc - scanner
+         * return uma grelha válida 
+         */
+        //pede as casas
+        boolean isValid = false;
+        SumdokuGrid grid = new SumdokuGrid(size);
+        int valor;
+        do { 
+                
+        for(int i=1;i<=size*size;i++){
+                do{
+                        System.out.print("Casa "+i+": ");
+                        valor = sc.nextInt();
+                        System.out.println(" ");
+                if(1 > valor || valor > size){
+                        System.out.println("Valor Inválido. Tem de estar entre 1 e "+size);
+                }
+                else{
+                        int r = rowOfSquare(i, size);
+                        int c = columnOfSquare(i, size);
+                        grid.fill(r,c,valor); //põe os valores em grid
+                }
+                }while(1>valor || valor>size);
+        }
+        //agr verificar se grid é válido 
+        isValid = isValidForPuzzle(grid);    
+        if(isValid == false){
+                System.out.println("Grelha inserida é inválida. Recomeçe.");
+        }
+        } while (isValid == false);
+        System.out.println("Grelha válida");
+
+        return grid;
+        /*dado um número inteiro positivo size entre 3 e 9 e um objeto 
+        do tipo Scanner, que se assume que não é null nem está fechado, obtém do utilizador uma grelha 
+        válida com tamanho size. A leitura é feita casa a casa */
+}
+public static GridGroups readGroups(SumdokuGrid grid, Scanner sc){
+        /*
+         * @param grid - grelha
+         * @param sc - scanner
+         * return um conjunto de grupos válido
+         *  */
+        //agr verificar se groups é válido
+        boolean isValid = false;
+        int numGroups;
+        GridGroups groups = null;
+        do { 
+            do { //pede nº de grupos
+                System.out.println("Número de grupos? ");
+                numGroups = sc.nextInt();
+                if(2 > numGroups || numGroups > (grid.size()*grid.size())){
+                        System.out.println("Valor inválido. Tem de ser entre 2 e "+(grid.size()*grid.size()));
+                }
+            } while (2 > numGroups || numGroups > (grid.size()*grid.size()));  
+            
+            groups = new GridGroups(grid.size(), numGroups);
+
+            //pede casas para cada grupo 
+            int casasRestantes = grid.size()*grid.size();
+            for(int i =1;i<=numGroups;i++){
+                int tamgrupo=0;
+                do { 
+                        System.out.println("Tamanho do grupo "+i+"? ");
+                        tamgrupo = sc.nextInt();
+                if(1> tamgrupo || tamgrupo > (casasRestantes-(numGroups-i))){
+                        System.out.println("Valor inválido. Tem de ser entre 1 e "+((casasRestantes)-(numGroups-i)));
+                }
+                } while (1> tamgrupo || tamgrupo > (casasRestantes-(numGroups-i))); 
+                casasRestantes -=tamgrupo;
+                for(int p=1;p<=tamgrupo;p++){
+                        int casa = 0;
+                        do { 
+                            System.out.print("Casa? ");
+                            casa = sc.nextInt();
+                            System.out.println(" ");
+                            if(1>casa && casa>grid.size()*grid.size()){
+                                System.out.println("Valor Inválido. Tem de ser entre 1 e "+(grid.size()*grid.size()));
+                            }
+                            else{
+                                int r = rowOfSquare(casa, grid.size());
+                                int c = columnOfSquare(casa, grid.size());
+                                groups.addSquareToGroup(r,c,p);
+                            }
+
+                        } while (1>casa || casa>grid.size()*grid.size());
+                }
+            }
+            isValid = isValidGroupsForPuzzle(groups);
+            if(isValid == false){
+                System.out.println("Grupos inválidos. Recomeçe.");
+            }
+        } while (isValid == false);
+        System.out.println("Grupos válidos");
+        return groups;
+        /*, dado um objeto grid do tipo SumdokuGrid que se assume ser 
+        válido para um puzzle e um objeto do tipo Scanner, que se assume que não é null nem está 
+        fechado, obtém do utilizador um conjunto de grupos de casas da grelha, na forma de um objeto 
+        GridGroups válido para um puzzle. A leitura deve começar por pedir o número de grupos 
+        existentes, e depois devem ser obtidas as casas pertencentes a cada um dos grupos.  */
+}
+
+public static boolean puzzleSolved(SumdokuGrid playedGrid, SumdokuGrid grid){
+        /*
+         * @param playedGrid - uma grelha q representa a tentativa do jogador
+         * @param grid - a grelha com a resposta
+         * @return se a as duas grelhas têm o mesmo conteúdo
+         */
+        //ver se tá certo 
+        if(playedGrid.equals(grid)){
+                return true;
+         }
+         else{
+                return false;
+         }
+        /*, dado um objeto playedGrid do tipo SumdokuGrid que se assume 
+não ser null e um objeto grid também do tipo SumdokuGrid que se assume ser uma grelha válida 
+para um puzzle e com o mesmo tamanho que playedGrid, verifica se playedGrid resolve o 
+puzzle. A função retorna true se for esse o caso e false no caso contrário. */
+}
+
+    
+public static  SumdokuGrid getBuiltInGrid(int size){
+        /*
+         * @param size - tamanho da grelha
+         * @return - uma grelha com a resposta, já builtin
+         */
+        SumdokuGrid grid = new SumdokuGrid(size);
+        int c1,c2,c3,c4,c5,c6,c7,c8,c9;
+        c1=3;c2=1;c3=2;c4=1;c5=2;c6=3;c7=2;c8=3;c9=1;//valor de cada casa
+        grid.fill(1,1,c1);
+        grid.fill(1,2,c2);
+        grid.fill(1,3,c3);
+        grid.fill(2,1,c4);
+        grid.fill(2,2,c5);
+        grid.fill(2,3,c6);
+        grid.fill(3,1,c7);
+        grid.fill(3,2,c8);
+        grid.fill(3,3,c9);
+        
+
+        return grid;
+        /*Funções SumdokuGrid getBuiltInGrid(int size) e GridGroups getBuiltInGroups(int 
+     size) que, para size = 3, constroem respetivamente a grelha e o conjunto de grupos do puzzle 
+     de tamanho 3 dado como exemplo. Para valores de size entre 4 e 9 as funções podem dar null ou 
+     construir exemplos válidos. 
+     */
+                
+}
+public static GridGroups getBuiltInGroups(int size){
+        /*
+         * @param size- tamanho da grelha 
+         * @return um conjunto de grupos válidos, já builtin
+         */
+       GridGroups groups = new GridGroups(size,5);
+
+       groups.addSquareToGroup(1,1,1);
+       groups.addSquareToGroup(1,2,1);
+       groups.addSquareToGroup(1,3,3);
+       groups.addSquareToGroup(2,1,1);
+       groups.addSquareToGroup(2,2,2);
+       groups.addSquareToGroup(2,3,3);
+       groups.addSquareToGroup(3,1,4);
+       groups.addSquareToGroup(3,2,4);
+       groups.addSquareToGroup(3,3,5);
+       
+       return groups;        
+
+}
+
+public static void play(SumdokuGrid grid, GridGroups groups, int maxAttempts, Scanner sc){
+        /*
+         * @param grid - grelha com a resposta
+         * @param groups - os grupos certos
+         * @param maxAttempts - o nº de tentativas do jogador
+         * @param sc - um scanner
+         * @return (void)- começa o jogo em si 
+         */
+        //Início
+        System.out.println("Bem Vindos ao jogo Sumdoku!");
+        System.out.println("Neste jogo a grelha tem tamanho"+grid.size()+"e tem estas pistas:");
+        System.out.println("-----------");
+        System.out.println(groups.toString());//supostamente mostra os grupos em texto
+        System.out.println("-----------");
+        cluesToString(grid, groups);//escreve as pistas
+        System.out.println(("Tens "+maxAttempts+" tentativas para resolver o puzzle. Boa Sorte!"));
+        
+
+        boolean gameOn = true;
+        boolean win = false;
+        SumdokuGrid playedGrid = new SumdokuGrid(grid.size());
+        //play
+        while(gameOn){
+                //Pedir casa e valor a colocar
+                int casa;
+                int r;
+                int c;
+                do{
+                System.out.print("Casa a preencher? ");
+                casa = sc.nextInt();
+                System.out.println(" ");
+                r = rowOfSquare(casa, grid.size());
+                c = columnOfSquare(casa, grid.size());
+                if(playedGrid.isFilled(r,c)){
+                        System.out.println("Casa já está preenchida. Escolha outra casa. ");
+                }
+
+                if(1 > casa || casa > (grid.size() * grid.size())){
+                        System.out.println("Valor Inválido. Tem de estar entre 1 e "
+                        +(grid.size() * grid.size()));
+                }
+                } while(1 > casa || casa > (grid.size() * grid.size()) || playedGrid.isFilled(r,c));
+
+                int valor;
+                do{
+                        System.out.print("Valor a colocar? ");
+                        valor = sc.nextInt();
+                        System.out.println(" ");
+        
+                if(1 > valor || valor > grid.size()){
+                        System.out.println("Valor Inválido. Tem de estar entre 1 e "
+                        +grid.size());
+                }
+                } while(1 > valor || valor > grid.size());
+                
+                //adicionar o valor e mostrar grid
+                int c2 = columnOfSquare(casa, grid.size());
+                int r2 = rowOfSquare(casa, grid.size());
+                playedGrid.fill(r2,c2,valor);
+
+                System.out.println("-----------");
+                playedGrid.toString();//supostamente mostra o grid em texto
+                System.out.println("-----------");
+
+                //ok agr repete isto até acabar o jogo
+
+
+                //agr para ver se o playedGrid está correto
+                boolean solved = puzzleSolved(playedGrid, grid);
+                if(solved==true){
+                        win =true;
+                }
+                else{
+                        maxAttempts -=1;
+                        System.out.println("Perdeu uma tentativa, restam "+maxAttempts+"tentativas");
+                        play(grid,groups,maxAttempts,sc);
+                }
+                //ou acabaram as tentativas ou ganhou o jogo
+                if(win==true){
+                        System.out.println("Parabéns, resolveste o puzzle!");
+                        gameOn = false;
+                        sc.close();
+                }
+                if(maxAttempts==0){
+                        System.out.println("Tentativas esgotadas. Tenta outra vez!");
+                        gameOn = false;
+                        sc.close();
+                }
+        }               
+
+
+        /* dado objetos de tipos SumdokuGrid e GridGroups que se assumem 
+         ser válidos e definirem um puzzle, dado um número inteiro positivo maxAttempts e um objeto do 
+         tipo Scanner, que se assume que não é null nem está fechado:
+         1. declara e inicializa uma variável playedGrid com um novo objeto do tipo SumdokuGrid
+         com o mesmo tamanho que a grelha recebida;
+         2. imprime as pistas do puzzle e o número de tentativas que o jogador vai ter para o 
+         adivinhar;
+         3. obtém do utilizador uma jogada válida —uma casa e um número para colocar nessa 
+         casa— e regista a jogada em playedGrid
+         4. imprime playedGrid
+         5. repete os passos 3 e 4 até o puzzle ser adivinhado ou ter sido atingido o número máximo 
+         de tentativas, imprimindo uma mensagem apropriada */   
+}
+}
