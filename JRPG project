@@ -1,0 +1,1652 @@
+This is the final version, it has the map the character moving around with monsters and some Npcs giving out missions,
+then we also have an attacking screen against the monster, it was supposed to be with buttons but we had a problem with it.
+This is before college, did this with YaoLu-0512
+not sure if it'll ru without the images for the characters and blocks
+
+p.s. had to leave the shrek lol
+
+
+from ast import Global, If
+import pygame
+import os
+import math
+# meth is better
+import PySimpleGUI as sg
+import pickle 
+import sys
+from PIL import Image, ImageTk
+import io
+#                                                             
+#                                                             
+#⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣄⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+#⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⠟⠋⠙⠋⠉⠙⢷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+#⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣶⣶⣄⠀⠀⠀⢠⣾⣿⣁⡀⠀⠀⠀⠀⠀⠀⢑⣿⡆⠀⠀⠀⢠⣾⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+#⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢿⣿⣿⣾⣦⡀⢠⣾⡿⣛⣛⡻⢷⣄⠀⠀⣴⣾⣿⠛⠻⠦⣄⣴⣿⣿⡿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+#⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠻⢿⣿⣿⣿⣿⣿⢿⣿⣿⣧⢼⣿⣿⣿⠿⣿⣇⢸⡟⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+#⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⠿⢿⣾⣿⣤⠿⠋⠀⠈⠻⢿⣿⣧⣿⠟⣬⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+#⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⠃⠀⠀⢀⣴⣖⣶⠀⠀⠀⠀⠀⢀⡈⠀⠀⢘⣾⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+#⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣶⣶⣶⠿⠿⠿⠿⠷⠶⠶⠶⠛⠋⠻⣦⣤⣀⡼⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+#⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢿⡇⠀⣿⠻⢷⣤⣀⠀⠀⠀⠈⠀⠀⠀⣀⣈⡻⢿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+#⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣿⡿⠛⡏⠁⠂⠘⠭⢿⣒⣒⡒⠒⠒⠊⠉⠁⠀⠀⣿⠤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+#⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⠟⠁⡄⠣⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡌⠙⠲⣤⣀⠠⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+#⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⣏⠀⠀⢿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠋⠀⠀⠀⠀⠈⠙⠚⠓⠶⢤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+#⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣴⣿⣿⣿⣿⣶⣀⡴⠛⢷⣄⣠⣄⡀⠀⠀⠀⠀⠀⠀⠀⠐⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠳⢦⡀⠀⠀⠀⠀⠀⠀⠀
+#⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣤⣤⠴⠾⣿⣿⣿⣿⣿⠟⠛⠿⣿⣦⣄⠙⢻⣿⣷⣦⡤⠤⠶⠒⠛⠁⣠⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⣆⠀⠀⠀⠀⠀⠀
+#⠀⠀⠀⠀⠀⠀⠀⠀⢠⣴⡾⠏⠁⠀⠀⠀⠀⠰⠿⠟⠋⠀⠀⠀⠀⠈⠉⠛⠙⠋⠉⠉⠀⠀⠀⠀⠀⣀⡴⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢧⡀⠀⠀⠀⠀
+#⠀⠀⠀⠀⠀⠀⢀⣴⡿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠒⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢷⠀⠀⠀⠀
+#⠀⠀⠀⠀⠀⢀⣾⡿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢉⡁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⡇⠀⠀⠀
+#⠀⠀⠀⠀⢄⣾⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⢸⡁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⣧⢀⡀⠀⠀⠀⠀⠀⠀⠀⠀⣧⠀⠀⠀
+#⠀⠀⠀⠀⣼⣋⣧⣶⠀⠀⠀⢀⡀⣀⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡤⣼⣿⣿⣟⣤⡀⠀⠀⠀⠀⠀⠀⠘⣦⠀⠀
+#⠀⠀⠀⠀⣿⡟⡇⣿⣤⣤⣴⣼⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢼⣷⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠠⠏⣴⣿⣿⠋⠉⠉⠛⠋⡄⠂⠀⠀⠀⠀⠈⣇⠀
+#⠀⠀⠀⢀⣿⣷⣜⢿⣿⣿⣿⣿⣿⣿⣟⢿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣶⠾⣿⣿⣷⠀⠀⠀⠀⠀⠀⠀⠐⠖⣠⣶⣿⣟⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡀
+#⠀⠀⢀⣾⠋⠻⣿⡶⠍⠙⠛⢿⣿⣿⣿⣮⡙⠿⣿⣶⣤⣄⣀⣤⣤⣤⣤⡀⢀⣈⣁⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇
+#⠀⠀⣾⠇⠀⠀⠘⢷⡇⠀⠀⠀⢿⣿⣿⣿⣿⣶⣼⣿⣿⣟⣻⣿⣿⣿⣿⡿⠟⠛⠁⠀⠉⠻⢿⣿⣶⣤⣴⣶⣶⣤⣶⣿⣿⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠇
+#⠀⢸⣿⠀⠀⠀⢠⡞⠀⠀⠀⠀⢾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⣋⣠⣀⠀⠀⠀⠀⠀⠀⠀⢉⣛⢻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⠀
+#⠀⢸⡏⠀⠀⠀⣼⠁⠀⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⠛⠿⡿⠛⠉⠉⠉⠁⠀⢀⠀⠀⠀⠀⠀⠉⠰⠿⠿⠛⠻⠟⠉⠁⢩⢹⣿⣿⣄⠀⠸⣆⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀
+#⠀⣿⢿⠀⠀⣰⠇⠀⠀⠀⠀⠀⣿⡟⢻⣿⣿⣿⣿⣿⡟⠻⢶⣤⠀⠀⠀⠀⠀⠀⠀⢸⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⢿⣿⣿⣦⠀⢹⣆⠀⠀⠀⠀⠀⠀⠀⡇⠀
+#⢀⡟⠺⠀⢐⡿⠀⠀⠀⠀⢀⣼⣿⠁⠀⢻⣿⣿⣿⣿⣿⣷⣤⣿⣤⣤⣤⣤⣶⡄⠀⠀⣿⣇⣤⣤⣀⣀⡀⠀⠀⠀⠀⠀⠈⢿⣷⣿⡾⠁⢿⣿⣷⣿⣿⡷⠀⠀⠀⠀⠀⠀⡇⠀
+#⢸⡇⠀⠘⣿⡁⠀⠀⢀⣰⣿⣿⠃⠀⠀⠀⢻⣿⣽⠋⠛⢯⢿⣿⠛⠛⠋⠉⠙⠛⠲⣄⠉⠉⠁⠈⠉⠙⠛⠷⣦⣤⣤⣌⠀⠀⢸⡟⠁⠀⠀⠻⣿⣿⣿⣍⠀⠀⠀⠀⠀⠀⢧⠀
+#⢸⠁⠀⠀⢹⣷⣿⣿⣿⣿⣿⠋⠀⠀⠀⠀⢸⣿⢢⠀⠂⠀⣭⣿⡀⠀⠀⠀⠀⠀⠀⢸⡉⠀⠀⠀⠀⠀⠀⠀⠉⠀⠀⠀⠀⠀⡿⠀⠀⠀⠀⠀⢹⣿⡿⠉⠀⠀⠀⠀⠀⠀⡾⠀
+#⠀⠀⠀⠀⠀⠋⣿⣿⣿⡟⠁⠀⠀⠀⠀⠀⣼⣏⠈⠁⢰⠀⢨⣿⣧⣀⡀⣠⠀⠀⠀⣸⡁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡇⠀⠀⠀⠀⠀⣸⡍⠁⠀⠀⠀⠀⠀⠀⣠⣷⠀
+#⠀⠀⠀⠀⠀⠀⠙⢿⣿⡇⠀⠀⠀⠀⠀⢠⣿⠟⠇⠀⠈⠑⢦⣿⠿⠿⠿⠿⠶⢀⢀⣸⠿⣶⣦⣠⡖⠀⠀⠀⠀⠀⠀⠀⢀⣿⠀⠀⠀⠀⠀⠀⡿⠀⠀⠀⠀⠀⠀⠀⠀⠘⢻⡆
+# ⠀⠀⠀⠀⠀⠀⠀⣼⡇⠀⠀⠀⠀⠀⣸⡗⠀⠀⠀⠀⠀⠀⠙⠷⡄⣀⠀⠀⠻⠟⠃⠀⠀⠀⠀⠤⠀⠀⠀⠀⠀⠀⠀⣾⡟⠀⠀⠀⠀⠀⢰⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇
+#⠀⠀⠀⠀⠀⠀⠀⠀⠹⠇⠀⠀⠀⠀⠀⣸⣿⠠⢰⣶⠄⠀⠀⠀⢀⣀⠀⢠⠀⠀⢠⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣙⣿⠁⠀⠀⠀⠀⠀⣸⣷⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⠇
+#                        reza ao shrek para n ter bugs 
+Ar=[]
+users=[]
+#parte de definir o sistema de coordenadas
+
+def Pathfinder(filename):
+    # para n ter de fazer a copy paste sempre
+    here = os.getcwd()
+    joint = os.path.join(here,filename)
+    return joint
+
+class Bloc:
+    #definir os blocos como objecto
+    def __init__(self,axix,axiy,type):  #os blocos diferenciam-se por x,y e tipo de bloco(Land,Sea)
+        self.axix = axix         
+        self.axiy = axiy
+        self.type = type
+#LOCALIDADES
+class Sea:
+    #definir blocos de mar
+
+     walk = False
+     imag = pygame.image.load(open(Pathfinder('Sea blob.png')))
+class Land:
+     
+    #defininr blocos de terra
+    
+     walk = True
+     imag = pygame.image.load(open(Pathfinder('land green.png'))) 
+class Sand:
+    walk = False
+    
+    imag=pygame.image.load(open(Pathfinder('Sand2.png')))
+class Dirt:
+    walk =True
+
+    imag=pygame.image.load(open(Pathfinder('Dirt2.png')))
+ 
+class Fountain:
+    # o lugar onde recupera mana
+    def __init__(self,axix,axiy):
+        self.axix = axix
+        self.axiy = axiy
+    imag = pygame.image.load(open(Pathfinder('fountain.png')))
+
+class Tree:
+    #decoracao
+    def __init__(self,axix,axiy):
+        self.axix = axix
+        self.axiy = axiy
+    imag = pygame.image.load(open(Pathfinder('tree.png')))
+
+class Bush:
+    #decoracao
+    def __init__(self,axix,axiy):
+        self.axix = axix
+        self.axiy = axiy
+    imag = pygame.image.load(open(Pathfinder('bush.png')))
+
+ #   MISSÕES
+class Mission:
+    def __init__(self, strtp, finp, re, axix, axyx,name,questitem):
+        self.startprime = strtp
+        self.endprime = finp
+        self.reward = re
+        self.axix = axix
+        self.axiy = axyx
+        self.name = name
+        self.obj = questitem
+    img = None
+    took = False
+    finish = False
+    starttxt = None
+    endtxt= None
+#BOTÃO
+class Button:
+    def __init__(self, color, x,y,width,height, text=''):
+        self.color = color
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.text = text
+
+    def draw(self,screen,outline=None):
+       
+        if outline:
+            pygame.draw.rect(screen, outline, (self.x-2,self.y-2,self.width+4,self.height+4),0)#isto desenha um retangulo um pouco maior para ficar o outline
+            
+        pygame.draw.rect(screen, self.color, (self.x,self.y,self.width,self.height),0) #Este é o botão em si
+        
+        if self.text != '':
+            #Texto
+            font = pygame.font.SysFont('comicsans', 35)
+            text = font.render(self.text, 1, (0,0,0)) 
+            screen.blit(text, (self.x + (self.width/2 - text.get_width()/2), self.y + (self.height/2 - text.get_height()/2)))#centrar o texto
+
+    def over(self, pos):
+        #pos é a posição do mouse
+        #Para saber se o mouse está em cima do botão
+        if pos[0] > self.x and pos[0] < self.x + self.width:  
+            if pos[1] > self.y and pos[1] < self.y + self.height:
+                
+                return True
+            
+        return False
+#SPELLs:
+class Bolt:
+    def __init__(self,descri,elementt,mana, dmg):
+      self.name = descri
+      self.element = elementt
+      self.mana = mana  
+      self.dmg = dmg
+    effect = None
+  
+class Storm:
+    def __init__(self,descri,elementt):
+        self.name = descri
+        self.element = elementt
+    dmg = 40
+    mana = 15
+class Asinus:
+    name = 'Asinus'
+    dmg = 200
+    mana = 30
+    element = None
+
+# OBJECTOS PARA INTERAGIR NA MAPA
+class Chest:
+    #caixas que contem objetos
+    def __init__(self,axix,axiy,content):
+        self.raxix = axix
+        self.raxiy = axiy
+        self.cnt = content
+    keey = False
+    looted = False
+    imag = pygame.image.load(open(Pathfinder('chest 1.png')))
+    
+class Monsta:
+    #monstros que vão ser encontrado na mapa
+    def __init__(self,axix,axiy,typee,count): #vamos usar type para identificar que monstro
+        self.axix = axix         
+        self.axiy = axiy
+        self.type = typee 
+        self.count = count
+
+class Mcountainer:
+    # usamos isto dentro de sistema de combate
+    def __init__(self, monster1,monster2,monster3):
+        self.mons = [monster1 ,monster2 ,monster3]
+    loot = None
+    xp = 0
+#COMBATE
+
+
+def Sackorganiser():
+    # para n ter demaisados repetição 
+    global sack 
+    
+    appl, port, catm, slim = 0 , 0 , 0 , 0
+    for i in range(len(sack)):
+        if sack[i].name == 'apple':
+            appl +=1
+        elif sack[i].name == 'healing portion':
+         port +=1
+        elif sack[i].name == 'catepillar meat':
+            catm +=1
+        elif sack[i].name ==  'slime condensate':
+           slim +=1 
+    organised = [('apple',appl),('healing portion',port),('catepillar meat',catm),('slime condensate',slim)]
+    return organised
+
+class Slime_W:
+    #slime usado no combate
+    def __init__(self, hp):
+     self.hp = hp
+    alive = True
+    element = 'water'
+    
+    atk = 2
+    imag = pygame.image.load(open(Pathfinder('SLIMEW1.png')))
+
+class Bandit_M:
+    #bandits para missao
+    def __init__(self,hp):
+        self.hp = hp
+    alive = True
+    element = 'nope'
+    
+    atk = 3
+    imag = pygame.image.load(open(Pathfinder('bandit.png')))  
+
+class Catepil_M:
+    #monstos mais avancados
+    def __init__(self,hp):
+        self.hp = hp 
+    alive = True
+    element = 'nope'
+    atk =5
+    imag = pygame.image.load(open(Pathfinder('caterpillar.png')))
+
+class Golem_M:
+    #boss
+    def __init__(self,hp):
+        self.hp = hp 
+    alive = True
+    element = 'nope'
+    atk =20
+    imag = pygame.image.load(open(Pathfinder('golem.png')))
+#OBJECTOS QUE UM JOGADOR PODE OBTER
+class Wand:
+    #arma para protanonista
+    def __init__(self,name,atk,cash):
+        self.name = name
+        
+        self.atkm = atk
+        self.cash = cash
+    img = None
+class Heali:
+    #itens para curar 
+    def __init__(self,name,rehp,cash):
+        self.name = name
+        self.rehp = rehp
+        self.cash = cash
+#PERSNAGENS
+class Dude:
+    #o caracter que vamos mexer na mapa
+     speed = 1
+     imag = pygame.image.load(open(Pathfinder('witch state 1.png')))
+     abaxix = 60
+     abaxiy = 60 
+
+class Cdude: #dude na fight
+    #usado durante o combate
+    hp = 100
+    atkm = 1
+    icepwr = [True,False,False]
+    firepwr = [True,False,False]
+    arcpwr = [True,False,False,False]
+    mana = 40
+    xp = 0
+    lvl = 1
+
+#FUNÇÕES MAMADAS \o/
+
+def Missonprinter():
+    # vai ver qual missao temos completado e quais n , para alem de dar blit das personagems que ainda estao presentes
+    global convo, convoprime, miliss, screen
+    for i in range(len(miliss)):
+        if (convo/(miliss[i].endprime)).is_integer():
+           screen.blit(miliss[i].img,(miliss[i].axix,miliss[i].axiy))
+
+def Missonprinter():
+    # vai ver qual missao temos completado e quais n , para alem de dar blit das personagems que ainda estao presentes
+    global convo, convoprime, miliss, screen
+    for i in range(len(miliss)):
+        if (convo/(miliss[i].endprime)).is_integer():
+           screen.blit(miliss[i].img,(miliss[i].axix,miliss[i].axiy))
+def Missionmanager(index):
+    global allmiliss, miliss,convoprime,convo, convoini, sack, gamewin
+    internalconvo = convo
+    found = False
+    if (convo/(miliss[index].startprime)).is_integer():
+       #quando comeca a missao fala o starttxt
+       #BOLHA DE FALA
+
+        rect_params = [0, 450, 350, 300]
+        pygame.draw.rect(screen, (0,0,0), rect_params,border_radius=15) 
+        textoi=miliss[index].starttxt
+       
+        charperline = 30  # comprimento da linha
+
+                #dividir o texto em linhas
+        lines = [textoi[i:i + charperline] for i in range(0, len(textoi), charperline)]#charperline aqui é o step da função range
+        #isto significa q o i vai até i+char não incluindo      
+   
+        y = 460  
+
+        for line in lines:
+                    my_font34 = pygame.font.SysFont('Comic Sans MS', 20)
+                    text_start = my_font34.render(line, False, (255, 255, 255))
+                    screen.blit(text_start, ( 20, y))
+                    y += 30 # isto é para baixar as linhas
+
+        print(miliss[index].starttxt)
+        internalconvo = convo/(miliss[index].startprime)
+
+    else:
+            #pygame.draw.rect(screen, (0,0,0), rect_params,border_radius=15) 
+            #my_font34 = pygame.font.SysFont('Comic Sans MS', 20)
+            #text_hello = my_font34.render("Hello there", False, (255, 255, 255))
+            #screen.blit(text_hello, (20,460))
+
+            #print('hello there')
+        
+            for i in range(len(sack)):
+               if sack[i].name == miliss[index].obj:
+                  #aqui missao acaba e metemos o endtxt
+                  print( miliss[index].obj, 'is found in sack')
+                  sack.pop(i)
+                  #BOLHA DE FALA
+                
+                  rect_params = [0, 450, 350, 300]
+                  pygame.draw.rect(screen, (0,0,0), rect_params,border_radius=15) 
+                  textoend=miliss[index].endtxt
+       
+                  charperline = 30  # comprimento da linha
+
+                  #dividir o texto em linhas
+                  lines = [textoend[i:i + charperline] for i in range(0, len(textoend), charperline)]#charperline aqui é o step da função range
+                  #isto significa q o i vai até i+char não incluindo      
+   
+                  y = 460  
+
+                  for line in lines:
+                      my_font34 = pygame.font.SysFont('Comic Sans MS', 20)
+                      text_end= my_font34.render(line, False, (255, 255, 255))
+                      screen.blit(text_end, ( 20, y))
+                      y += 30 # isto é para baixar as linhas
+                
+                  print(miliss[index].endtxt)
+
+                  internalconvo = convo/(miliss[index].endprime)
+                  if miliss[index].endprime == 13:
+                         gamewin = True
+                  sack.append(miliss[index].reward)
+                  found = True
+                  break
+            if found == False:   
+                  pygame.draw.rect(screen, (0,0,0), rect_params,border_radius=15) 
+                  my_font34 = pygame.font.SysFont('Comic Sans MS', 20)
+                  text_fm = my_font34.render("FINISH THE MISSION ", False, (255, 255, 255))
+                  screen.blit(text_fm, (20,460))
+
+                  print('FINISH THE MISSION ')
+    convo = internalconvo       
+ 
+
+def Inii(liss): #coordenadas,  #mte o ecrã todo com Sea
+        #iniciar
+        for yi in range(14):# 0-13
+            for xi in range (26): #0-25
+             liss.append(Bloc(xi,13-yi,Sea))
+
+def pint(liss): # VAI PINTAR TODo O ECRÃ COM SEA   e print da lista na ordem que vamos apresentar no terminal
+      
+       count = 0 
+       for yi in range(14):
+            for xi in range (26):
+             print(liss[count].axix,liss[count].axiy,liss[count].type)
+             screen.blit(liss[Find(liss,xi,yi)].type.imag,(xi*50,yi*50))
+             count += 1 
+       print(count)
+def Pintbloc(liss): #pint só que não vai apaecer blocos inúteis no cmd
+    
+        for yi in range(14):
+            for xi in range (26):
+             screen.blit(liss[Find(liss,xi,yi)].type.imag,(xi*50,yi*50))
+
+def Iniim(liss,baa,baa2): #iniciar o MAPA TODA com baus e monstros
+     # baa e baa2 aqui era chestliss e monliss mas agr com o systema de pickel vou ter de mudar isso tudo
+     global rcheses, rmonmon, flist, trelis,buliss
+     chestliss = rcheses
+     monliss = rmonmon
+     Pintbloc(liss)    
+     for i in range(len(chestliss)):
+        screen.blit(chestliss[i][2].imag,(chestliss[i][0],chestliss[i][1]))         
+     for i in range(len(monliss)):
+         screen.blit(monliss[i].type.imag,(monliss[i].axix,monliss[i].axiy))
+     for i in range(len(flist)):
+         screen.blit(flist[i].imag,(flist[i].axix,flist[i].axiy))
+     for i in range(len(trelis)):
+         screen.blit(trelis[i].imag,(trelis[i].axix,trelis[i].axiy))
+     for i in range(len(buliss)):
+         screen.blit(buliss[i].imag,(buliss[i].axix,buliss[i].axiy))
+     Missonprinter() 
+        
+        
+#ESCOLHER AS COORDENADAS Q QUERES PINTAR (mudar o tipo)
+
+def Find(liss,x,y):   #procurar o bloco com determindada coordenada em(liss)
+    # liss é a lista das coordenadas todas dos blocos
+    
+    lisx = []
+    end = None
+    for i in range(len(liss)):  #procura o x na lista, vai ter o x para todos os y
+        if liss[i].axix == x:
+            lisx.append(liss[i])
+    for u in range(len(lisx)): #procura o y na lista do x(lisx)
+        if lisx[u].axiy == y:
+         end = lisx[u]  
+    # da-nos o index que bloco tem dentro da lista
+    return liss.index(end)
+
+def Square(liss,x,y,size): #pede o tamanho do quadrado que quer desenhar e o coordenada em que começa(Find)
+    
+    select = []
+    for p in range(size): #É preciso fazer p e l para garantir q n fica (1,1)(2,2)(3,3)...
+        for l in range(size):
+            select.append(Find(liss,x+l,y+p))# Find dá nos o index do objeto com a coordenada pretendida
+    return select
+
+def Sett(liss,select,typp):  # Depois de escolher as coordenadas que começa(Find) e o tamanho do quadrado(Square), muda os tipos dos blocos(Sett) no select
+   
+    for b in range(len(select)):    #select são as coordenadas do quadrado
+     liss[select[b]].type = typp          
+
+#Mexe Mexe
+
+def Move_d(guy,events,screen,liss,chestliss,monliss):
+       
+ image = guy.imag
+    #backg = Land.imag
+ keys= pygame.key.get_pressed()
+    
+ 
+ if keys[pygame.K_w] or keys[pygame.K_UP] :
+            #mexe para cima
+             print('moved up, now in',guy.abaxix,guy.abaxiy)
+             guy.abaxiy -=7
+             #ver se podemos andar
+             if Waka(liss,guy.abaxix,guy.abaxiy) == True:
+             #para a personagem n aparecer 2 vezes:
+              Iniim(liss,chestliss,monliss)
+              screen.blit(image,(guy.abaxix,guy.abaxiy))
+             else:
+                 guy.abaxiy +=7
+                 print('no lol')
+             
+ if keys[pygame.K_s] or keys[pygame.K_DOWN] :
+                 #mexe para baixo
+             print("moved down, now in" ,guy.abaxix,guy.abaxiy)
+             guy.abaxiy +=7
+             if Waka(liss,guy.abaxix,guy.abaxiy) == True:
+              Iniim(liss,chestliss,monliss)
+              screen.blit(image,(guy.abaxix,guy.abaxiy))
+             else:
+                 guy.abaxiy -=7
+                 print('no lol')
+     
+ if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+          #mexe para esquerda
+             print('moved left,now in',guy.abaxix,guy.abaxiy)
+             guy.abaxix -=7
+             if Waka(liss,guy.abaxix,guy.abaxiy) == True:
+              Iniim(liss,chestliss,monliss)
+              screen.blit(image,(guy.abaxix,guy.abaxiy))
+             else:
+                 guy.abaxix +=7
+                 print('no lol')
+     
+     
+ if keys[pygame.K_d] or keys[pygame.K_RIGHT] :
+              #mexe para direita
+             print('moved right,now in',guy.abaxix,guy.abaxiy)
+             guy.abaxix +=7
+             if Waka(liss,guy.abaxix,guy.abaxiy) == True:
+              Iniim(liss,chestliss,monliss)
+              screen.blit(image,(guy.abaxix,guy.abaxiy))
+             else:
+                 guy.abaxix -=7
+                 print('no lol')
+
+def Waka(liss,raxix,raxiy):  # dá-nos a coordenada do bloco que queremos ir, e verifica se podemos, de facto, andar nele
+   
+    axix = raxix // 50
+    axiy = raxiy // 50
+    if raxix//50 != 0:
+        axix +=1
+    if raxiy//50 != 0:
+        axiy +=1
+    
+    if 0 <= axix < 26 and 0 <= axiy < 14:
+        bloc = Find(liss, axix, axiy)
+        
+        if axix <= 25 and axiy <= 13:
+            if liss[bloc].type.walk == False:
+                return False
+            else:
+                return True
+        
+    else:
+        return False    
+
+# SISTEMA DE INTERAGIR COM CAIXA
+def Fetch(sack,baa,guy,event,): #calcular a distancia a cada caixa, e abre o mais proximo quando clicas no "E"
+   global rcheses  
+   box = rcheses #lista das caixas
+   baa = 'idk' # baa aqui era box mas agr com o systema de pickel vou ter de mudar isso tudo 
+   for event in events:
+    if event.type == pygame.KEYDOWN:
+         if event.key == pygame.K_e:
+             #calcular a distancia 
+           distance = []
+           closeboxindex = 0
+           for i in range(len(box)):
+             a = abs(box[i][0]-guy.abaxix) #a é a diferença dos x e b dos y
+             b = abs(box[i][1]-guy.abaxiy)
+             distance.append(math.sqrt(a**2+b**2)) #lista das distâncias, com Bsort fica em ordem crescente
+           Bsort(distance)  
+
+           #dps de encontrar a distancia mais perto, procuramos qual caixa é que está mais perto (primeira da lista [0])
+           for i in range(len(box)):
+             a = abs(box[i][0]-guy.abaxix)
+             b = abs(box[i][1]-guy.abaxiy)
+             currentdis = math.sqrt(a**2+b**2)
+             if currentdis == distance[0]:
+                 closeboxindex = i 
+                 break
+           try: 
+             if distance[0] <70: 
+               #abrir e adicionar ao inventorio , se a distancia for pequeno
+
+              if box[closeboxindex][2].keey == False: 
+               print('fetch attempted')
+               sack.append(box[closeboxindex][2].cnt)
+               box[closeboxindex][2].looted = True #se tiver looted apaga a caixa
+               rcheses.pop(closeboxindex)
+              else:
+                 print('key needed')
+           except:
+               print('no more chests')
+           else:
+                  print('chest too far')
+
+
+# SISTEMA DE ENCONTRATR OS MOSTROS NA MAPA
+def EncountF():
+    global guy, cguy ,events, flist
+    # para iniciar conversa com os agentes de missoes
+    for event in events:
+     if event.type == pygame.KEYDOWN:
+         if event.key == pygame.K_r:
+          #calcular a distancia 
+           distance = []
+           
+           for i in range(len(flist)):
+             a = abs(flist[i].axix-guy.abaxix)
+             b = abs(flist[i].axiy-guy.abaxiy)
+             distance.append(math.sqrt(a**2+b**2))
+           Bsort(distance)    
+                      
+           if distance[0] <70:
+              cguy.mana = 40 + 20*(cguy.lvl) 
+              print('she has the mana value of', cguy.mana)
+               #preenche a mana
+ 
+def EncountM():
+    global guy, convo, mi1, mi2, convoprime, miliss, events
+    # para iniciar conversa com os agentes de missoes
+    for event in events:
+     if event.type == pygame.KEYDOWN:
+         if event.key == pygame.K_q:
+          #calcular a distancia 
+           distance = []
+           closemissionindex = 0
+           for i in range(len(miliss)):
+             a = abs(miliss[i].axix-guy.abaxix)
+             b = abs(miliss[i].axiy-guy.abaxiy)
+             distance.append(math.sqrt(a**2+b**2))
+           Bsort(distance)    
+           #dps de encontrar a distancia mais perto, procuramos qual caixa é que está mais perto
+           for i in range(len(miliss)):
+             a = abs(miliss[i].axix-guy.abaxix)
+             b = abs(miliss[i].axiy-guy.abaxiy)
+             currentdis = math.sqrt(a**2+b**2)
+             if currentdis == distance[0]:
+                 closemissionindex = i
+                 break
+           try: 
+             if distance[0] <70:
+               #comeca a conversa se ainda n for acabada
+               if(convo/(miliss[i].endprime)).is_integer():
+                 print('visiting', miliss[closemissionindex].name, 'which has the index of', closemissionindex)
+                 Missionmanager(closemissionindex)
+                 
+                 
+                 
+                 
+               else:
+                   print('mission eneded')
+             else:
+                  print('no agents nearby')
+           except:
+               print('no more agents')
+ 
+
+def Encount(baa,guy):#calcular a distancia do monstro e distancia para BATTLE
+      
+    
+    global  battle
+    global  locked
+    global  rmonmon
+    monliss = rmonmon
+    # baa aqui era box mas agr com o systema de pickel vou ter de mudar isso tudo 
+    distance = []
+    for i in range(len(monliss)):
+     a = abs(monliss[i].axix-guy.abaxix) #a é a diferença dos x e b dos y
+     b = abs(monliss[i].axiy-guy.abaxiy)
+     distance.append(math.sqrt(a**2+b**2))#lista das distâncias, com Bsort fica em ordem crescente
+    Bsort(distance)  
+    
+    if distance[0]< 30:
+             if battle == False:
+               
+               battle= True
+               locked= True
+               print('ENCOUNTERED')
+               
+def Encountw(baa,guy):#Qual monstro encontrar 
+
+    # vou fazer isso para determinar qual monstro é que encontramos na mapa
+    # baa aqui era monliss mas agr com o systema de pickel vou ter de mudar isso tudo 
+    global rmonmon
+    monliss = rmonmon 
+    distance = []
+    for i in range(len(monliss)):
+     a = abs(monliss[i].axix-guy.abaxix)  #a é a diferença dos x e b dos y
+     b = abs(monliss[i].axiy-guy.abaxiy)
+     distance.append(math.sqrt(a**2+b**2)) #lista das distâncias, com Bsort fica em ordem crescente
+    Bsort(distance) 
+
+    for i in range(len(monliss)):
+        a = abs(monliss[i].axix-guy.abaxix)
+        b = abs(monliss[i].axiy-guy.abaxiy)
+        currentdis= (math.sqrt(a**2+b**2))
+        if currentdis == distance[0]:
+            return(monliss[i].count) #o monstro pretendido
+        
+def Encountwi(baa,guy): #igual ao Encontw mas dá o index do monstro
+
+    # vou fazer isso para determinar qual monstro é que encontramos na mapa,return dá-nos a INDEX do monstro no lista de monstros na mapa
+    # monliss aqui era box mas agr com o systema de pickel vou ter de mudar isso tudo 
+    global rmonmon
+    monliss = rmonmon
+    distance = []
+    for i in range(len(monliss)):
+     a = abs(monliss[i].axix-guy.abaxix)
+     b = abs(monliss[i].axiy-guy.abaxiy)
+     distance.append(math.sqrt(a**2+b**2))
+    Bsort(distance)
+
+    for i in range(len(monliss)):
+        a = abs(monliss[i].axix-guy.abaxix)
+        b = abs(monliss[i].axiy-guy.abaxiy)
+        currentdis= (math.sqrt(a**2+b**2))
+        if currentdis == distance[0]:
+            return(i)  
+                         
+def Cselectw():
+   #aqui escolhes qual dos inimigos queres atacar 
+   inin = 0
+   inin = int(input('Escolhe qual monstro atacar(1-3)(cima-3, baixo-1)'))
+   for event in events:
+      if event.type == pygame.KEYDOWN : 
+         if event.key == pygame.K_1: 
+             inin = 0
+      if event.type == pygame.KEYDOWN:
+          if event.key == pygame.K_2:
+              inin = 1
+      if event.type == pygame.KEYDOWN:
+          if event.key == pygame.K_3:   
+              inin = 3  
+   print(inin) 
+   return inin
+                       
+# SISTEMA DE COMBATE
+def Equimananger():
+    #vai equipar a bosta com maior dano
+    global sack , cguy, equi
+    wlist = []
+    wmlist = [] #aqui é só o atkm  dos wands
+    for i in range(len(sack)):
+        print('checked', sack[i].name)
+        if type(sack[i]) is Wand:
+            wlist.append(sack[i])
+            wmlist.append(float(sack[i].atkm))
+    
+    Bsort(wmlist)
+    for i in range(len(wlist)):
+        if wlist[i].atkm == wmlist[len(wmlist)-1]:
+            equi[0] = wlist[i]
+            break   
+    print('equiped with ',equi[0].name)
+
+def Combatmulti(spell): 
+    global cguy, equi 
+    nowdmg = spell.dmg*cguy.atkm*equi[0].atkm
+    
+    return nowdmg
+    
+def Manacheck(spell):
+    global cguy
+    if cguy.mana - spell.mana >= 0 :
+        return True
+    else:
+        print('no mana, need ', spell.mana, 'but only has', cguy.mana)
+        return False
+
+def cspell(spell,target):
+    global cguy
+     
+    if Manacheck(spell) == True:
+          cguy.mana -= spell.mana
+          target.hp -= Combatmulti(spell)
+    print("mana amount is now", cguy.mana)
+
+def Healme(item):
+    #cura a bruxa
+    global cguy, sack
+    max = 100 + (cguy.lvl)*40
+    cguy.hp += item.rehp
+    if cguy.hp > max:
+        cguy.hp = max
+    print('healed to ', cguy.hp)
+    # usar itens do sack para curar
+
+def itemselect(itemm):
+    
+    global sack
+    
+    found = None
+    
+    for i in range(len(sack)):
+        if itemm == sack[i].name:
+            print(itemm ,'found')
+            found = sack[i]
+            sack.pop(i)
+            break
+    return found
+
+def lvlmanager(xpgained):  
+    # ver se sobe de nivel e aplica novos niveis
+    global cguy, xp4lvlup
+    cguy.xp += xpgained
+    if cguy.xp > xp4lvlup[cguy.lvl]:
+        cguy.xp = (cguy.xp-xp4lvlup[cguy.lvl])
+        cguy.lvl += 1
+        cguy.atkm += 0.15
+        print('lvl is now', cguy.lvl, 'xp amount is', cguy.xp)
+    else:
+        print('Not enough xp to lvl up! lvl is now', cguy.lvl, 'xp amount is', cguy.xp)
+    return None
+   
+# SISTEMA DE COMBATE            
+ 
+
+              
+#def btrng(container,radom):
+  #  global cguy,equi
+   # wonwon = False
+   # monhpsum , cguyvalue = 0, 0
+    
+   # for i in range(len(container.monliss)):
+    #    monhpsum += container.mons[i].hp
+   # cguyvalue = monhpsum / (cguy.atkm*40)
+   # monvalue = cguy.hp/(container.mons[0].atk*3)
+   # odds = cguyvalue/monvalue
+   # if odds >= 1:
+  #      wonwon = True
+  #  else:
+  #   rando = random.random()
+   #  if odds >= rando :
+  #       wonwon = True
+   # return wonwon
+    
+   #Ecrã PRINCIPAL
+def Battlem1(screen,container,equiped,events,mlissindex):
+    #váriavéis que vão sei úteis
+    global myturn,sack,cguy,locked,battle,scran,cheses,monmon,guy,gamewin
+    selects = False
+    win = False
+   # music3=pygame.mixer.Sound(open(Pathfinder("from the new world Antonin Dvorak Symphony n.9 IV.mp3")))
+    #music3.set_volume(0.1)
+   # music3.play()
+    load = True
+    if load == True:
+
+     icontainer = container
+    sloc = [(200,224),(200,529),(100,376)]
+    #iniciar a background
+    bground= pygame.image.load((open(Pathfinder("grassland_battlefield.png"))))
+    prota = pygame.image.load((open(Pathfinder("witch combat unarmed.png"))))
+
+    if icontainer.mons[0].hp<0:
+          icontainer.mons[0].hp=0
+    if icontainer.mons[1].hp<0:
+        icontainer.mons[1].hp=0   
+    if icontainer.mons[2].hp<0:
+        icontainer.mons[2].hp=0 
+    life1=icontainer.mons[0].hp
+    life2=icontainer.mons[1].hp
+    life3=icontainer.mons[2].hp
+   
+    life1=f"{life1}" 
+  
+    life2=f"{life2}"
+
+    
+    life3=f"{life3}"
+   
+
+    
+    
+            
+    
+    
+   
+    
+    
+    lifeguy=f"{cguy.hp}"
+    Mana=f"{cguy.mana}"
+   
+
+    screen.blit(bground,(0,0))
+    screen.blit(prota,(900,271))
+
+    flife = pygame.font.SysFont('Comic Sans MS', 20)
+    tlm1 = flife.render(life1, False, (0, 0, 0))
+    screen.blit(tlm1, (240,180))
+    tlm2 = flife.render(life2, False, (0, 0, 0))
+    screen.blit(tlm2, (240,490))
+    tlm3 = flife.render(life3, False, (0, 0, 0))
+    screen.blit(tlm3, (140,330))
+    tlguy = flife.render(lifeguy, False, (0, 0, 0))
+    screen.blit(tlguy, (930,240))
+    tlgu = flife.render(Mana, False, (0, 128, 255))
+    screen.blit(tlgu, (1000,240))
+
+    
+    
+
+    #Botões principais
+    pygame.draw.rect(screen, (206,144,0), [0,600 , 1300, 100])#border_radius=15  põe isto para as bordas ficarem curvas
+
+    Exit = Button((206,144,0),1075,625,110,50,"Fugir",)
+    Exit.draw(screen,(0,0,0))
+
+    Atacar= Button((206,144,0),900,625,130,50,"Atacar",)
+    Atacar.draw(screen,(0,0,0))
+
+    Inventário= Button((206,144,0),650,625,200,50,"Inventário",)
+    Inventário.draw(screen,(0,0,0))
+   
+    mon1=Button((184,255,61),200,224,50,50,"",)
+    mon1.draw(screen)
+    mon2=Button((184,255,61),200,529,50,50,"",)
+    mon2.draw(screen)
+    mon3=Button((184,255,61),100,376,50,50,"",)
+    mon3.draw(screen)
+    #WINNNNNNN
+    deadcount = 0      
+    for i in range(3):
+       
+        if icontainer.mons[i].hp <= 0 :
+           icontainer.mons[i].alive = False 
+           deadcount +=1
+           
+         #ver se tão vivos 
+        
+        if icontainer.mons[i].alive == True:
+          #print quando tão vivos
+          #deadcount = 0
+          screen.blit(icontainer.mons[i].imag,sloc[i])  
+    if deadcount == 3:
+        monmon.pop(mlissindex)
+        print("deathcount works") 
+        win = True 
+        load = False
+        
+            
+
+    if win == True:
+       # music3.stop()
+        print("mae")
+         
+                                                       #TÀ a FUNCIONAR MAS TÁ FEIO DEPOIS Vê
+        screen.fill((255,196,0))         
+        pygame.draw.rect(screen, (240,0,0), [0,200 , 1300, 150],border_radius=15) 
+        print("famiy fridly")
+        Exit2 = Button((0,200,0),200,625,110,50,"Sair",)    
+        Exit2.draw(screen,(0,0,0))  
+
+        #Texto
+        pygame.font.init() 
+      
+        my_font = pygame.font.SysFont('Comic Sans MS', 100)
+        text_surface = my_font.render('VICTORY!', False, (255, 196, 0))
+        screen.blit(text_surface, (450,200))
+         
+        for event in events:
+           pos=pygame.mouse.get_pos()
+      
+           if event.type == pygame.MOUSEBUTTONDOWN:
+              if Exit2.over(pos) == True:
+                         
+                         locked,battle=False,False
+                         
+                        
+                         
+                         Iniim(scran,cheses,monmon)
+
+                         screen.blit(guy.imag,(guy.abaxix,guy.abaxiy))   
+         
+        myturn = False
+        sack.append(icontainer.loot)
+    
+
+    if gamewin==True:
+        victory=pygame.mixer.Sound((open(Pathfinder("success-fanfare-trumpets-6185.mp3"))))
+        victory.set_volume(0.1)
+        victory.play()
+        screen.fill((255,196,0))  
+        pygame.draw.rect(screen, (240,0,0), [0,200 , 1300, 150],border_radius=15) 
+        Quit= Button((206,144,0),1100,625,200,50,"Quit",)
+        Quit.draw(screen,(0,0,0))
+      
+
+        my_font = pygame.font.SysFont('Comic Sans MS', 100)
+        text_surface = my_font.render('WINNER!', False, (255, 196, 0))
+        screen.blit(text_surface, (450,200))
+
+        for event in events:
+           pos=pygame.mouse.get_pos()
+      
+        if event.type == pygame.MOUSEBUTTONDOWN:
+           
+            if Quit.over(pos)==True:
+              RuSureEsc()
+         
+     
+    #blit dos mosntros
+
+
+    #GAME OVER      
+    if cguy.hp <= 0 :
+      # music3.stop()
+       screen.fill((0, 0, 0))
+       print('game over')
+       #Texto
+       my_font2 = pygame.font.SysFont('Comic Sans MS', 200)
+       text_surface2 = my_font2.render('Game Over', False, (255, 0, 0))
+       screen.blit(text_surface2, (150,150))
+         
+       game_over=pygame.mixer.Sound((open(Pathfinder("Game Over sound effect.mp3"))))
+       game_over.set_volume(0.1)
+       game_over.play()
+       
+       #Menu =  Button((206,144,0),850,625,200,50,"Menu",)
+       #Menu.draw(screen,(0,0,0))
+
+       Quit= Button((206,144,0),1100,625,200,50,"Quit",)
+       Quit.draw(screen,(0,0,0))
+
+       for event in events:
+        pos=pygame.mouse.get_pos()
+      
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            #if Menu.over(pos)==True:
+              # 
+               # pygame.quit()
+               # main()                                     
+               # break  
+            if Quit.over(pos)==True:
+              RuSureEsc()
+   
+   
+   #Ecrã PRINCIPAL
+    inventory=True
+    if myturn==False:
+        cguy.mana+=5
+        for i in range(len(icontainer.mons)):
+                       cguy.hp -= icontainer.mons[i].atk
+                       print('health is now', cguy.hp)
+                       
+                       myturn = True
+
+    if myturn == True:
+         
+     for event in events:
+       pos=pygame.mouse.get_pos()
+      
+       if event.type == pygame.MOUSEBUTTONDOWN:
+              if Exit.over(pos)==True:
+                  #music3.stop()
+                  print('ran away ')
+                  cguy.hp -= 0.3*cguy.hp
+                  locked,battle = False,False
+                  #vamos ter de teletransportar para isso n entrar num loop de encounter e fugir
+                  guy.abaxix+=60
+                  #re inicia a mapa
+                  Iniim(scran,cheses,monmon)
+                  screen.blit(guy.imag,(guy.abaxix,guy.abaxiy))
+
+          
+
+              elif Atacar.over(pos)==True:
+                     print("Mana",cguy.mana)
+                     inin=int(input( ''' 
+Escolher o ataque(1-4):
+1-Murro(mana-0,dano-10)
+2-Ebolt(mana-5,dano-30)
+3-Blizz(mana-15,dano-45)
+4-Asinus(mana-30,dano-100) '''))
+                     
+
+                     if inin == 1:
+                          
+                              
+                           icontainer.mons[Cselectw()].hp -= 30*(cguy.atkm)
+                     elif inin == 2:
+                           #cguy.mana-=5
+                          # if cguy.mana<0:
+                          #     cguy.mana+=5
+                          #     print("Não tem mana suficiente")
+                          # if cguy.mana>=0: 
+                               
+                           cspell(ebolt,icontainer.mons[Cselectw()]) 
+                     elif inin == 3:
+                           #cguy.mana-=15
+                          # if cguy.mana<0:
+                           #    cguy.mana+=15
+                           #    print("Não tem mana suficiente")
+                           #if cguy.mana>=0: 
+                               
+                           cspell(blizz,icontainer.mons[Cselectw()])
+                     elif inin == 4:
+                           #cguy.mana-=30
+                           #if cguy.mana<0:
+                           #    cguy.mana+=30
+                           #    print("Não tem mana suficiente")
+                           #if cguy.mana>=0: 
+                               
+                           cspell(asinus,icontainer.mons[Cselectw()])
+                     
+                     
+                     print (icontainer.mons[0].hp)
+                     print (icontainer.mons[1].hp)
+                     print (icontainer.mons[2].hp)
+                     
+                         
+
+                     myturn = False
+                  
+                                 
+              
+             
+                 #escolhe quem atacar
+              elif Inventário.over(pos)==True:
+                      for i in range(len(sack)):
+                          print(sack[i].name)
+                          
+                      Healme(itemselect(input('Escreva o nome do objeto')))
+                     
+                         
+
+                       
+                      
+# YUMMY PICKLE IN MY TUMMY (estou a enloucecer)   
+def Saveg():#Guardar o progresso
+    
+    global guy,sack,equi,cguy,battle,cheses,monmon,savv,convo,rcheses,gamewin
+    chestcord = []
+    moncord = []
+    for i in range(len(rcheses)):
+       chestcord.append((rcheses[i][0],rcheses[i][1])) #Chestcord é as coordenadas dos chests
+    for i in range(len(monmon)):
+       moncord.append((monmon[i].axix,monmon[i].axiy)) #Moncord é as coordenadas dos monstros
+
+    savv = [(guy.abaxix,guy.abaxiy),sack,equi,cguy,chestcord,moncord,convo,gamewin]
+    pick= open('jrpg.data','wb')
+    pickle.dump(savv,pick)
+    pick.close()
+   
+    print('saved')  
+    
+def Loadg():
+    # ler do pickle o q foi guardado 
+    global guy,sack,equi,cguy,battle,cheses,monmon,savv,convo,chestcord,moncord,gamewin
+    chestcord = []
+    moncord = []
+    loadddd = [(guy.abaxix,guy.abaxiy),sack,equi,cguy,chestcord,moncord]
+   
+    loaddd = []
+   
+    try:
+      pick= open('jrpg.data','rb')
+      loaddd = pickle.load(pick)
+      # vamos inserir as coisas que obtivemos do pickle para os dados do jogo
+      loaddd = []
+      pick= open('jrpg.data','rb')
+      loaddd = pickle.load(pick)
+      guy.abaxix = loaddd[0][0]
+      guy.abaxiy = loaddd[0][1]
+      
+      sack = loaddd[1]
+      print(sack)
+      equi= loaddd[2]
+      cguy = loaddd[3]
+      chestcord = loaddd[4]
+      moncord = loaddd[5]
+      convo = loaddd[6]
+      gamewin = loaddd[7]
+      print (''' loaded data
+             she was at''',loaddd[0][0],loaddd[0][1],'''
+             inventrory has :''',sack,''''
+             with these equipped:''', equi ,'''
+             convo level at'''   , convo, '''
+             unopened chests are at (x,y): ''', chestcord, '''
+             undeafeated monsters at(x,y):''', moncord, 
+            '')
+      
+      pick.close()
+    except:
+     print('nothing to load')
+# PICKLE (funções para inserir os dados lidos para o jogo) 
+
+def Autofillr(chestcordliss,chestliss,mcordliss,monliss):
+  global rcheses
+  print(chestcordliss)
+  for i in range(len(chestcordliss)):
+      for o in range(len(chestliss)):
+        if chestcordliss[i][1] == chestliss[o][1] and chestcordliss[i][0] == chestliss[o][0] :
+            rcheses.append(chestliss[o])
+            print('chest added at',chestliss[o][0],chestliss[o][1])
+  global rmonmon
+  for i in range(len(mcordliss)):
+      for o in range(len(monliss)):
+        if mcordliss[i][0] == monliss[o].axix and mcordliss[i][1] == monliss[o].axiy :
+            rmonmon.append(monliss[o])
+            print('monsters added at',monliss[o].axix,monliss[o].axiy)
+
+def Bsort(liss): #PÕE a lista de números em ordem crescente
+    #vamos fazer um bubble sort  
+    count = -1 
+    iliss = liss
+    temp1 = 0
+    temp2 = 0
+    while count != 0:
+     count = 0
+     for i in range(len(liss)-1): 
+        if iliss[i]>iliss[i+1]: #vai vendo cada par, se liss[1]>lissz[2] então eles trocam de posição até ficarem todos em ordem
+            temp1 = iliss[i]
+            temp2 = iliss[i+1]
+            iliss[i+1] = temp1
+            iliss[i] = temp2
+            count += 1
+        
+    return iliss
+#Ainda n usados
+
+def Wbloc(guy, liss):
+    # dá-nos o bloco que se encontra no lugar do caracter
+  axix = guy.abaxix // 50
+  axiy = guy.abaxiy // 50
+  if guy.abaxix//50 != 0:
+        axix +=1
+  if guy.abaxiy//50 != 0:
+        axiy +=1
+  bloc = Find(liss,axix,axiy)
+  return bloc
+
+#USER INTERFACE 
+      
+sg.theme("Dark Amber") 
+looad = False # para load
+
+#mudar o tamanho da imagem
+
+arrows=Pathfinder('arrows.png')
+
+def Newsize(arrows,newsize):
+    Orimage=Image.open(arrows)
+    
+    resize=Orimage.resize(newsize)
+
+    return resize
+
+#Voltas para o stor
+def RuSureM():
+    layout4=[[sg.Text("Are you sure?")],
+             [sg.Button("Yes"),sg.Stretch(),sg.Button("No")]]
+
+    window4=sg.Window("2",layout4,size=(150,100),element_justification="center")
+
+    while True:
+        event,values=window4.read()    
+
+        if event=="No" or event==sg.WIN_CLOSED:
+            window4.close()
+            main()
+            break
+
+        if event=="Yes":
+            window4.close()
+            sys.exit()        
+def RuSureCont():
+    global looad
+
+    
+    layout5=[[sg.Text("Are you sure?")],
+             [sg.Button("Yes"),sg.Stretch(),sg.Button("No")]]
+
+    window3=sg.Window("3",layout5,size=(150,100),element_justification="center")
+
+    while True:
+        event,values=window3.read()    
+
+        if event=="No" or event==sg.WIN_CLOSED:
+            window3.close()
+            main()
+            break
+
+        if event=="Yes":
+            window3.close()
+            looad = True
+            break
+def RuSureNG():
+ layout4=[[sg.Text("Are you sure?")],
+             [sg.Button("Yes"),sg.Stretch(),sg.Button("No")]]
+
+ window4=sg.Window("4",layout4,size=(150,100),element_justification="center")
+
+ while True:
+        event,values=window4.read()    
+
+        if event=="No" or event==sg.WIN_CLOSED:
+            window4.close()
+            NewGame()
+            break
+
+        if event=="Yes":
+            window4.close()
+            sys.exit()
+def RuSureTut():
+ layout4=[[sg.Text("Are you sure?")],
+             [sg.Button("Yes"),sg.Stretch(),sg.Button("No")]]
+ 
+ window4=sg.Window("5",layout4,size=(150,100),element_justification="center")
+
+ while True:
+        event,values=window4.read()    
+
+        if event=="No" or event==sg.WIN_CLOSED:
+            window4.close()
+            Tutorial()
+            break
+
+        if event=="Yes":
+            window4.close()
+            sys.exit()
+
+#Esta é sempre q for quit 
+def RuSureEsc():
+ layout4=[[sg.Text("Are you sure ?")],
+          
+             [sg.Button("Yes"),sg.Stretch(),sg.Button("No")]]
+
+ window4=sg.Window("6",layout4,size=(150,100),element_justification="center")
+
+ while True:
+        event,values=window4.read()    
+
+        if event=="No" or event==sg.WIN_CLOSED:
+            window4.close()
+            
+            break
+
+        if event=="Yes":
+            window4.close()
+            running = False 
+            pygame.quit() 
+            Saveg()  
+            sys.exit()
+
+#Janelas Principais
+
+def NewGame():
+    global looad
+    
+    layout2=[[sg.Button("Back")],
+        [sg.Text("Enter your username")],
+              [sg.InputText(key="username")],
+              [sg.Text("")],
+                [sg.Button("Play",size=(10,2))],
+                [sg.Text("")],
+                [sg.Button("Quit",size=(5,1))]]
+    
+    window2= sg.Window("7",layout2,size=(300,250),element_justification="center" ) 
+   
+    while True:
+     event,values = window2.read()
+     
+     user=values["username"]
+     
+     
+     
+     if event=="Back":
+         window2.close()
+         main()
+         break
+     
+     if user and event=="Play":                              
+             
+             window2.close()
+             print("Starting Game")
+           
+             looad = False
+             break
+                          
+     if event == sg.WIN_CLOSED  or event == "Quit":
+          window2.close()
+          RuSureNG()
+          break
+         
+     if not user and event =="Play":
+              print("enter a username")    
+
+def Tutorial():
+    
+   newsize=(200,150) #ALterar o tamanho da imagem 
+    
+   resizedim=Newsize(arrows,newsize)
+    
+   photo = ImageTk.PhotoImage(resizedim)
+
+   byte_array = io.BytesIO()
+   resizedim.save(byte_array, format='PNG')
+   byte_value = byte_array.getvalue()
+    
+   layout3=[[sg.Button("Back"),sg.Stretch(),sg.Text("How to Play",font=(20))],
+             [sg.Text("How to Move")],
+             [sg.Button("W")],[sg.Text("",size=(5,1))],
+             [sg.Button("A"),sg.Button("S"),sg.Button("D"),sg.Stretch(),sg.Text("or use Arrows"),sg.Image(data=byte_value,key="Arrows")],
+             [sg.Text("")],
+             [sg.Text("To interact with objects"),sg.Stretch(),sg.Text("To interact with people")],
+             [sg.Button("E"), sg.Stretch(),sg.Button("Q")],
+             [sg.Text("To Quit")],
+             [sg.Button("Esc")], 
+             [sg.Text("")],
+             [sg.Button("Quit")]   #Tá Feito só é preciso melhorar depois pq tá um bocado estranho
+    ] 
+   
+   window3=sg.Window("8",layout3,size=(600,450))
+
+   while True:
+        event,values=window3.read()
+        
+        if event == sg.WIN_CLOSED or event=="Quit":
+            window3.close()
+            RuSureTut()
+            break
+           
+        elif event =="Back":
+            window3.close()
+            main()
+            break
+           
+def main():
+
+ layout =[[sg.Text("")],
+          [sg.Button("New Game",size=(20,2))],
+          [sg.Text("")],
+          [sg.Button("Continue",size=(20,2))],
+          [sg.Text("")],
+          [sg.Button("Tutorial",size=(20,2))],  
+          [sg.Text("")],
+          [sg.Button("Quit" ,size=(20,2))]]
+ 
+ window=sg.Window("9",layout,size=(500,350),element_justification="center")
+
+ while True:
+          
+     event,values = window.read()
+     if event == sg.WIN_CLOSED  or event == "Quit": 
+         window.close()
+         RuSureM()
+         break
+     elif event == "New Game":
+      
+      window.close()
+      NewGame()
+      break   #Estes break são para n dar o bug de clicar no play(outros) e dar quit 
+     
+     elif event == "Continue":
+         window.close()        
+         RuSureCont()
+         break
+        
+       # Falta arranjar o coiso do new  para o continue funcionar
+     
+     elif event == "Tutorial":
+         window.close()
+         Tutorial()
+         break
+
+#INICIALIZAR
+
+main()
+xp4lvlup = [10,20,30,40,99999999]
+savv = []
+scran = []
+sack = []
+convo = 1
+chestcord = []
+moncord = []
+convoini = 30030
+convoprime = [2,3,5,7]
+convo = 30030
+missions = []
+gamewin = False
+#wand
+wlvl1 = Wand('Wand for novince',1,30)
+wlvl2 = Wand('Old Wand',1.2,40)
+wlvl3 = Wand('test',99999,999999)
+Inii(scran)#mete o ecrã todo com Sea
+
+Sett(scran,Square(scran,1,1,3),Sand)
+Sett(scran,Square(scran,3,1,7),Sand)
+Sett(scran,Square(scran,9,5,7),Sand)
+Sett(scran,Square(scran,10,5,7),Land)
+Sett(scran,Square(scran,2,1,3),Land)
+Sett(scran,Square(scran,4,1,7),Land) #Sett muda o tipo de bloco para um novo(Land,Sea)
+Sett(scran,Square(scran,11,1,6),Land) # Square(x,y que começa e o tamnho do quadrado)
+Sett(scran,Square(scran,19,6,5),Sand)
+Sett(scran,Square(scran,20,6,5),Dirt)
+Sett(scran,Square(scran,18,1,6),Sand)
+Sett(scran,Square(scran,19,1,6),Dirt)
+Sett(scran,Square(scran,17,3,2),Land)
+
+fo1 = Fountain(400,100)
+fo2 = Fountain(900,50)
+flist = [fo1,fo2]
+
+tr1, tr2, tr3, tr4 = Tree(640,490), Tree(580,510), Tree(690,530), Tree(450,100)
+trelis = [tr1,tr2,tr3,tr4]
+
+bu1, bu2, bu3 = Bush(400,150), Bush(430,160), Bush(820,300)
+buliss = [bu1,bu2,bu3]
+cguy = Cdude()
+guy = Dude()
+#items
+apple = Heali('apple',15,5)
+condem = Heali('slime condensate', 5,1)
+fish = Heali ('fish',30,10)
+junk = Heali('old geezers junk',1000000000,100000000)
+catemeat = Heali('catepillar meat', 50, 20)
+portion = Heali('healing portion',50,30)
+scroll = (Heali('scroll',1,1))
+ches1 = Chest(150,350,fish)
+
+ches2 = Chest(600,350,wlvl2)
+cheses = [(150,350,ches1),(600,350,ches2)]
+rcheses = []
+rmonmon = []
+sack = [apple,apple,apple,wlvl1]
+#spells
+ebolt = Bolt('eletric bolt','None',5,30)
+blizz = Bolt('blizzard','ice',15,45)
+asinus = Bolt('Asinus','None',30,200)
+#monsters
+slimee = Slime_W(20)
+slimee2 = Slime_W(20)
+slimee3 = Slime_W(20)
+slimee4 = Slime_W(20)
+slimee5 = Slime_W(20)
+slimee6 = Slime_W(20)
+
+bandd = Bandit_M(40)
+band1 = Bandit_M(40)
+band2 = Bandit_M(40)
+
+catpp = Catepil_M(60)
+catp1 = Catepil_M(60)
+catp2 = Catepil_M(60)
+catp3 = Catepil_M(60)
+catp4 = Catepil_M(60)
+catp5 = Catepil_M(60)
+
+golem1 = Golem_M(100)
+golem2 = Golem_M(100)
+golem3 = Golem_M(100)
+
+slims = Mcountainer(slimee,slimee2,slimee3)
+slims2 = Mcountainer(slimee4,slimee5,slimee6)
+
+slims.loot = condem
+slims.xp = 10
+slims2.loot = condem
+slims2.xp = 10
+
+bands = Mcountainer(bandd,band1,band2)
+bands.loot = junk
+bands.xp = 30
+
+capts = Mcountainer(catpp,catp1,catp2)
+capts2 = Mcountainer(catp3,catp4,catp5)
+
+capts.loot = catemeat
+capts.xp = 40
+capts2.loot = catemeat
+capts2.xp = 40
+
+golems = Mcountainer(golem1,golem2,golem3)
+golems.loot = scroll
+golems.xp = 50
+
+#monsters
+
+#current equipment
+equi = [wlvl1]
+monmon = [Monsta(130,70,Slime_W,slims),Monsta(600,340,Slime_W,slims2),Monsta(600,500,Bandit_M,bands),Monsta(875,175,Catepil_M,capts),Monsta(1000,100,Catepil_M,capts2),Monsta(1000,450,Golem_M,golems)]
+
+# definir misson
+mi1 = Mission(2,3,wlvl2,400,200,'shimeji','fish')
+mi1.img = pygame.image.load(open(Pathfinder('m1.png')))
+mi1.starttxt = 'I need a fish, i think you can find one in the chest near the sea, can you bring it to me?'
+mi1.endtxt = 'Thank you , here is a wand that i dont need anymore'
+
+mi2 = Mission(5,7,apple,750,150,'old geezer','old geezers junk')
+mi2.img = pygame.image.load(open(Pathfinder('m2.png')))
+mi2.starttxt = 'The bandits robbed me of my junk, can you take it back from them in the forest down below and bring it back to me? you will be rewarded handsomely'
+mi2.endtxt = 'ah finally i got junk back , here are some fruits that you can use to recover your hp.'
+
+mi3 = Mission(11,13,'nothing lol', 200,350,'grand wizard','scroll')
+mi3.img = pygame.image.load(open(Pathfinder('m3.png')))
+mi3.starttxt = 'To be a certified wizard you must defeat the golem that is in the northen edge of this island, defeat him , grab the scroll that he is protecting, and then return to me'
+mi3.endtxt = 'wonderful, you are now a certified wizard'
+
+miliss = [mi1,mi2,mi3]
+allmiliss = [mi1,mi2,mi3]
+
+pygame.init()
+screen = pygame.display.set_mode((1300, 700))
+clock = pygame.time.Clock()
+running = True
+
+#inicializar
+locked = False
+battle = False
+myturn = True
+# PIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIICCCCCCCCCCCCCCCCCCCCCCCCKKKKKKKKKKKKKKKKKKKLLLLLLLLLLLLLLLLEEEEEEEEE
+if looad == True:
+ Loadg()
+ Autofillr(chestcord,cheses,moncord,monmon)
+ if len(rmonmon) + len(rcheses) <= 0 :
+  rmonmon = monmon
+  rcheses = cheses
+  
+  print('there was no monsters nor chests')
+  if gamewin == True:
+      print('game already finished')
+      rmonmon = monmon
+      rcheses = cheses
+else:
+  print('fresh start')
+  rmonmon = monmon
+  rcheses = cheses
+Iniim(scran,cheses,monmon) 
+#meter os objetos 
+
+screen.blit(guy.imag,(guy.abaxix,guy.abaxiy))
+
+
+pygame.display.set_caption('JRPG')
+
+while running == True:
+  
+  events = pygame.event.get()
+  for event in events:
+      if event.type == pygame.QUIT:
+          RuSureEsc()
+            
+      if event.type==pygame.KEYDOWN:
+          if event.key == pygame.K_ESCAPE:
+              RuSureEsc()
+              
+  if locked == False:
+
+    
+
+
+    Move_d(guy,events,screen,scran,cheses,monmon)       
+  Fetch(sack,cheses,guy,events) #Está sempre ativo a distância dos baús(Fetch), monstros(Encount) e Move_d 
+  Encount(monmon,guy)
+  EncountM()
+  EncountF()
+  #music2=pygame.mixer.Sound(open(Pathfinder("3. Brittle Rille.mp3")))
+  #music2.play()
+  if battle == True:
+   # music2.stop()
+
+    Battlem1(screen,Encountw(monmon,guy), equi,events,Encountwi(monmon,guy))  #monmon-lista dos monstros no mapa,
+  pygame.display.flip()
+  
+pygame.quit() 
+
+
+Saveg()
