@@ -1,1 +1,189 @@
+/**
+ * @author Nuno Nunes 63731
+ */
 
+/**
+ *  Os objetos desta classe representam puzzles de Sumdoku
+ */
+public class SumdokuPuzzle {
+    private final int[] groupsValues;  //ideal seria copiar mas assim está certo na mesma
+    private final int[][] groupMembership;
+    private final int size;
+    private final int numberOfGroups;
+    
+    /**
+     * Constrói um puzzle, com o nº do grupo de cada casa e 
+     * quanto vale a soma de cada grupo
+     *  
+     * @param groupMembership
+     * @param groupsValues
+     */
+    public SumdokuPuzzle(int[][]groupMembership, int[]groupsValues){
+        if(!definesPuzzle(groupMembership, groupsValues)){
+            throw new IllegalArgumentException("Puzzle criado não define um puzzle");
+        }
+
+        this.groupMembership = groupMembership; 
+        this.groupsValues = groupsValues;
+        this.size = groupMembership.length;
+        this.numberOfGroups = groupsValues.length;
+    }
+    
+    /**definesPuzzle
+     * Verifica se o objeto criado realmente define um puzzle
+     * 
+     * @param groupMembership
+     * @param groupsValues
+     * @return true se definir um puzzle
+     */
+    public static boolean definesPuzzle(int[][] groupMembership, int[] groupsValues){
+        
+        int N = groupMembership.length;
+        int c = groupMembership[0].length;
+        if(N!=c){return false;}
+
+        if(N<3 || N>9 ){return false;} 
+
+        if(groupsValues.length<1||groupsValues.length>N*N){return false;}
+
+        for(int valor:groupsValues){
+            if(valor<1 || valor>(Math.pow(N,3)+Math.pow(N,2))/2){
+                return false;
+            }
+        }
+        boolean gcheck; //ver se cada grupo tem pelo menos uma casa 
+        for(int g=0; g<groupsValues.length;g++){
+            gcheck=false;
+            for(int i=0; i<N; i++){
+              for(int j=0; j<N; j++){
+                if(groupMembership[i][j]>(groupsValues.length-1)){
+                    return false;
+                }
+                if(groupMembership[i][j]==g){
+                    gcheck=true;
+                }
+              }
+            }
+            if(gcheck==false){return false;}
+        }
+        
+        SumdokuSolver solver = new SumdokuSolver(groupMembership,groupsValues);
+        int solutions = solver.howManySolutions(2);
+        
+        if(solutions>1){return false;}
+        
+
+
+        return true;
+    }
+
+    /**
+     * @return tamanho da grelha
+     */
+    public int size(){
+        return size;
+    }
+
+    /**
+     * @return número de grupos
+     */
+    public int numberOfGroups(){
+        return numberOfGroups;
+    }
+
+    /**Devolve o número do grupo de um determinado quadrado
+     * 
+     * @param col
+     * @param row
+     * @requires 1 ≤ col <= size() && 1 ≤ row <= size();
+     * @ensures  o valor retornado é um valor entre 1 e numberOfGroups()
+     * @return número do grupo da casa pretendida
+     */
+    public int groupNumber(int col, int row){
+        return groupMembership[row-1][col-1]+1;
+    }
+
+    /**
+     * 
+     * @param group
+     * @requires 1<=group<=numberOfGroups()
+     * @return a soma das casas do grupo dado
+     */
+    public int valueGroup(int group){
+        return groupsValues[group-1];
+    }
+
+    /**
+     * Verifica se o playedGrid é a solução do puzzle
+     * @param playedGrid
+     * @requires playedGrid!=null && playedGrid tem o tamanho certo
+     * @return true se é a solução caso contrário false
+     */
+    public boolean isSolvedBy(SumdokuGrid playedGrid){
+        SumdokuSolver solver = new SumdokuSolver(groupMembership,groupsValues);
+        int[][][]solutions = solver.findSolutions(1);
+
+        for(int i=0; i<size; i++){
+            for(int j=0; j<size; j++){
+                if(solutions[0][i][j] != playedGrid.value(i+1,j+1)){
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Verifica se as casas já preenchidas de playedGrid tem os valores da solução
+     * @param playedGrid
+     * @requires playedGrid!=null && playedGrid tem o tamanho certo
+     * @return true se tem os valores da solução caso contrário false
+     */
+    public boolean isPartiallySolvedBy(SumdokuGrid playedGrid){
+        SumdokuSolver solver = new SumdokuSolver(groupMembership,groupsValues);
+        int[][][]solutions = solver.findSolutions(1);
+
+        for(int i=0; i<size; i++){
+            for(int j=0; j<size; j++){
+                if(playedGrid.isFilled(i+1,j+1)){
+                  if(solutions[0][i][j] != playedGrid.value(i+1,j+1)){
+                      return false;
+                    }
+                }    
+            }
+        }
+        
+
+        return true;
+    }
+
+    public String cluesToString(){
+        StringBuilder sb = new StringBuilder();
+
+        for(int i=0; i<size; i++){
+            for(int j=0; j<size; j++){
+                sb.append(" "+(groupMembership[i][j]+1));
+            }
+            sb.append("\n");
+        }
+
+        for(int g=0; g<numberOfGroups; g++){
+            sb.append("G"+(g+1)+" = "+groupsValues[g]+" ");
+        }
+        sb.append("\n");
+
+        String output = sb.toString();
+        return output;
+    }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("SumdokuPuzzle: Size = "+size+" Grupos = "+numberOfGroups);
+        
+
+        String output = sb.toString();
+        return output;
+    }
+
+}
