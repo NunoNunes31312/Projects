@@ -1,6 +1,17 @@
-//Este foi o primeiro projeto que fiz, não ficou muito completo 
+//This was my first project, it isn't very complete.
 
-
+ /* dado objetos de tipos SumdokuGrid e GridGroups que se assumem 
+         ser válidos e definirem um puzzle, dado um número inteiro positivo maxAttempts e um objeto do 
+         tipo Scanner, que se assume que não é null nem está fechado:
+         1. declara e inicializa uma variável playedGrid com um novo objeto do tipo SumdokuGrid
+         com o mesmo tamanho que a grelha recebida;
+         2. imprime as pistas do puzzle e o número de tentativas que o jogador vai ter para o 
+         adivinhar;
+         3. obtém do utilizador uma jogada válida —uma casa e um número para colocar nessa 
+         casa— e regista a jogada em playedGrid
+         4. imprime playedGrid
+         5. repete os passos 3 e 4 até o puzzle ser adivinhado ou ter sido atingido o número máximo 
+         de tentativas, imprimindo uma mensagem apropriada */   
 
 
 
@@ -495,17 +506,6 @@ public static void play(SumdokuGrid grid, GridGroups groups, int maxAttempts, Sc
         }               
 
 
-        /* dado objetos de tipos SumdokuGrid e GridGroups que se assumem 
-         ser válidos e definirem um puzzle, dado um número inteiro positivo maxAttempts e um objeto do 
-         tipo Scanner, que se assume que não é null nem está fechado:
-         1. declara e inicializa uma variável playedGrid com um novo objeto do tipo SumdokuGrid
-         com o mesmo tamanho que a grelha recebida;
-         2. imprime as pistas do puzzle e o número de tentativas que o jogador vai ter para o 
-         adivinhar;
-         3. obtém do utilizador uma jogada válida —uma casa e um número para colocar nessa 
-         casa— e regista a jogada em playedGrid
-         4. imprime playedGrid
-         5. repete os passos 3 e 4 até o puzzle ser adivinhado ou ter sido atingido o número máximo 
-         de tentativas, imprimindo uma mensagem apropriada */   
+       
 }
 }
