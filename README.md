@@ -1,6 +1,6 @@
 # Projetos
 
-Here are all the projects I've done throughout my course in Computer Engineering 
+Here are all the projects I've done throughout my course in Computer Engineering (java)
 
 JRPG was before college and in python
 
