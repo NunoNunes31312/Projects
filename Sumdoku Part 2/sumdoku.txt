@@ -1,1 +1,149 @@
+import java.util.Scanner;
 
+public class SumdokuTxt {
+    public static void main(String[] args) {
+       if(args.length==0){
+        System.out.println("Não foram fornecidos argumentos");
+        System.exit(1);
+       }
+       int size = Integer.parseInt(args[0]);
+       int maxAttempts = size*size;
+
+       RandomSumdokuPuzzle random = new RandomSumdokuPuzzle(size);
+       if(random.hasNextPuzzle()){
+        SumdokuPuzzle puzzle = random.nextPuzzle();
+        Scanner reader = new Scanner(System.in);
+
+        play(puzzle, maxAttempts, reader,random);//começa o jogo
+
+       }
+       else{
+        System.out.println("Não há mais puzzles deste tamanho");
+        System.exit(0);
+       }
+
+       
+    }
+
+    /**
+     * Começa o jogo, joga até acabar as tentativas 
+     * @param puzzle
+     * @param maxAttempts
+     */
+    static void play(SumdokuPuzzle puzzle, int maxAttempts, Scanner reader,RandomSumdokuPuzzle random){
+        boolean gameOn=true;
+        SumdokuGrid playedGrid = new SumdokuGrid(puzzle.size());
+
+        System.out.println("Bem vindos ao jogo Sumdoku!");
+        System.out.println("As pistas do puzzle");
+        System.out.println(puzzle.cluesToString());
+        System.out.println("Tens "+maxAttempts+" tentativas para o resolver. Boa sorte!");
+
+        while(gameOn){
+
+            int square,value;
+            do {
+            System.out.print("Casa a preencher? ");
+            square = reader.nextInt();
+            if(square<1 || square>puzzle.size()*puzzle.size()){
+                System.out.println("Casa tem de estar entre 1 e "+(puzzle.size()*puzzle.size()));
+            }
+            } while (square<1 || square>puzzle.size()*puzzle.size());
+
+            do {
+                System.out.print("Valor a colocar? "); //pede o valor e casa
+                value = reader.nextInt(); 
+                if(value<1 || value>puzzle.size()){
+                    System.out.println("Valor tem de estar entre 1 e "+puzzle.size());
+                }
+            } while (value<1 || value>puzzle.size());
+            
+            maxAttempts--; 
+            playedGrid.fill(row(square,puzzle.size()), column(square,puzzle.size()),value);//preenche o grid e mostra-o
+            System.out.println("Tem "+maxAttempts+" tentativas");
+            System.out.println(playedGrid.toString());
+            
+            
+
+            // ver se ganhou ou n 
+            if(maxAttempts==0){
+                if(puzzle.isSolvedBy(playedGrid)){
+                    //win
+                    System.out.println("Parabéns, resolveste o puzzle!");
+                    gameOn=false;
+                    playAgain(reader, maxAttempts,random);
+                }
+                else{
+                        //perdeu
+                        System.out.println("Oops, tentativas esgotadas!");
+                        gameOn = false;
+                        playAgain(reader, maxAttempts,random);
+                }    
+            }           
+        }
+    }
+
+    /**
+     * Caso o jogador queira jogar novamente
+     * @param reader
+     * @param maxAttempts
+     * @param random
+     */
+    static void playAgain(Scanner reader,int maxAttempts,RandomSumdokuPuzzle random){
+
+        System.out.print("Queres tentar resolver um novo puzzle?(true/false)");
+        reader.nextLine();
+        String ans = reader.nextLine();
+        ans = ans.toUpperCase();
+        
+        if(ans.equals("TRUE")){
+
+            if(random.hasNextPuzzle()){
+                SumdokuPuzzle puzzle = random.nextPuzzle();
+                maxAttempts = puzzle.size()*puzzle.size();
+                
+                play(puzzle, maxAttempts, reader,random); 
+            }
+            else{ 
+            System.out.println("Não há mais Puzzles deste tamanho");
+            ans="FALSE";
+            
+        
+        }
+        }
+        if(ans.equals("FALSE")){
+            System.out.println("Espero que tenhas gostado. Volta sempre!");
+            System.exit(0);
+        }
+    }
+
+    /**
+     * 
+     * @param square
+     * @param size
+     * @requires size<=3 && size<=9  square<=1 && square<=size*size 
+     * @return coluna onde está o quadrado
+     */
+    static int column(int square, int size){
+        
+        int column;
+        if(square % size ==0){
+             column=size;
+        }
+        else{
+                column=square%size;
+        }
+        return column;
+    }
+    /**
+     * 
+     * @param square
+     * @param size
+     * @requires size<=3 && size<=9  square<=1 && square<=size*size 
+     * @return linha onde está o quadrado
+     */
+    static  int row(int square, int size){
+        int row = (int)Math.ceil((double)square/size);
+        return row;
+    }
+}
