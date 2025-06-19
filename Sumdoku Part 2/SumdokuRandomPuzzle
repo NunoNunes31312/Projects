@@ -1,1 +1,86 @@
+/**
+ * @author Nuno Nunes 63731
+ */
 
+/**
+ * Os objetos desta classe representam geradores aleatórios de puzzles de Sumdoku
+ * para grelhas de um determinado tamanho
+ */
+public class RandomSumdokuPuzzle {
+    private final int size;
+    private final SumdokuPuzzle[] puzzleList;//vetor de puzzles de Sumdoku
+    private int indexPuzzle;//index do puzzle atual
+
+    /**
+     * constrói um gerador de puzzles com grelha do tamanho dado
+     * @requires 3<=size && size<=9
+     * @param size
+     */
+    public RandomSumdokuPuzzle(int size){
+        this.size=size;
+        this.indexPuzzle=0;
+        if(size==3){
+            int[][] membership1 = {{0,0,2},{0,1,2},{3,3,4}};
+		    int[] values1 = {5,2,5,5,1};
+		    SumdokuPuzzle puzzle1 = new SumdokuPuzzle(membership1, values1);
+
+            int[][]membership2 = {{0,0,0},{0,0,1},{0,1,1}};
+            int[] values2 = {14,4};
+            SumdokuPuzzle puzzle2= new SumdokuPuzzle(membership2,values2);
+
+            int[][]membership3 = {{0,0,1},{1,2,1},{2,2,3}};
+            int[]values3 = {4,6,5,3};
+            SumdokuPuzzle puzzle3 = new SumdokuPuzzle(membership3, values3);
+
+            this.puzzleList = new SumdokuPuzzle[] {puzzle1,puzzle2,puzzle3};
+            
+        }
+        else if (size == 5){
+            int[][]membership1 = {{0,0,0,1,2},{3,3,0,1,2},{4,5,6,6,7},{4,5,8,8,7},{9,9,9,10,10}};
+            int[] values1 = {14,3,5,8,5,3,9,8,5,8,7};
+            SumdokuPuzzle puzzle1 = new SumdokuPuzzle(membership1, values1);
+
+            int[][]membership2 = {{0,0,1,1,1},{0,2,2,3,3},{3,4,4,5,6},{4,5,6,6,7},{7,8,7,8,9}};
+            int[] values2 = {9,9,7,9,6,10,9,4,7,5};
+            SumdokuPuzzle puzzle2 = new SumdokuPuzzle(membership2, values2);
+
+
+            this.puzzleList = new SumdokuPuzzle[]{puzzle1,puzzle2};
+        }
+        else{
+            this.puzzleList = new SumdokuPuzzle[0];
+            
+        }
+    }
+    
+    /**
+     * Devolve o tamanho da grelha
+     * @return tamanho da grelha dos puzzles criados
+     */
+    public int size(){
+        return size;
+    }
+
+    /**
+     * Verifica se há mais algum puzzle para fornecer
+     * @return true se existir mais algum puzzle para fornecer
+     */
+    public boolean hasNextPuzzle(){
+
+        if(indexPuzzle == puzzleList.length){
+            return false;
+        }
+        else{return true;}
+    }
+
+    /**
+     * Dá o próximo puzzle da lista de puzzles de um determinado tamanho
+     * @return o próximo puzzle built-in existente
+     */
+    public SumdokuPuzzle nextPuzzle(){
+        int index = indexPuzzle;
+        indexPuzzle++;
+        return puzzleList[index];
+        
+    }
+}
