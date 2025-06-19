@@ -1,1 +1,92 @@
+/**
+ * @author Nuno Nunes 63731
+ */
 
+
+/**
+* objetos representam grelhas de Sumdoku, cujas casas podem estar ou 
+* não preenchidas.
+ */
+public class SumdokuGrid {
+    private final int size;
+    private final Integer[][] grid;
+
+    /**
+     * @param size - Tamanho da grelha SumdokuGrid
+     * @requires 3<=size && size<=9 
+     */
+    public SumdokuGrid(int size){
+        this.size = size;
+        this.grid = new Integer[size][size];
+    }
+    /**Fill
+     * Preenche um determinado quadrado da grelha com um valor
+     * 
+     * @param r - linha da grelha
+     * @param c - coluna da grelha
+     * @param value - valor a colocar no quadrado pretendido
+     * @requires - 1<=r && r<=size , 1<=c && c<=size , 1<=value && value<=size*size
+     * @ensure - isFilled(l,c) && value(r, c) == value
+     */
+    public void fill(int r,int c,int value){
+        this.grid[r-1][c-1] = value; 
+    }
+
+    /**isFilled
+     * Verifica se um determinado quadrado da grelha está preenchido
+     * 
+     * @param r - linha da grelha
+     * @param c - coluna da grelha
+     * @requires - 1<=r && r<=size , 1<=c && c<=size
+     * @return - true se o quadrado está preenchido e false se não está
+     */
+    public boolean isFilled(int r,int c){
+        return this.grid[r-1][c-1] != null;
+    }
+
+    /**size
+     * tamanho da grelha
+     * 
+     * @ensures \result >= 3 && \result <= 9
+     * @return tamanho da grelha
+     */
+    public int size(){
+        return this.size;
+    }
+
+    /**toString
+     * Representação textual da grelha
+     * 
+     * @return uma representação textual da grelha
+     */
+    public String toString(){
+        StringBuilder st = new StringBuilder();
+        for(int i=0; i<size; i++){
+            for(int j=0; j<size; j++){
+                if(grid[i][j]==null){
+                    st.append(" .");
+                }
+                else{st.append(" "+grid[i][j]);}
+            } 
+            st.append("\n");
+        }
+        return st.toString();
+    }
+
+    /**value
+     * O valor de um determinado quadrado
+     * 
+     * @param r - linha da grelha 
+     * @param c - coluna da grelha
+     * @requires - 1 <= r && r <= size() && 1 <= c && c <= size() && isFilled(r,c)
+     * @ensures - 1 <= \result && \result <= size()
+     * @return - o valor de um determinado quadrado
+     */
+    public int value(int r, int c){
+        if(grid[r-1][c-1]==null){
+            return 0;
+        }
+        else{return grid[r-1][c-1];}
+    }
+
+}
