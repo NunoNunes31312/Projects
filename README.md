@@ -1,8 +1,7 @@
 # Projetos
-
 Here are all the projects I've done throughout my course in Computer Engineering (java, SQL, PL/SQL)
 
-JRPG(an rpg game) was before college and in python
+- JRPG(an rpg game) was before college and in python
 
 1st year 1st semester  :  
 - Sumdoku part 1 and 2  (sudoku like-game, added groups of squares that added sum to x )
@@ -13,7 +12,7 @@ JRPG(an rpg game) was before college and in python
 - EstacionamentoAlunos      
 
 2nd year 1st semester (SQL, PL/SQL):
-Information Systems and Databases:
+Information Systems and Databases(SIBD):
 E1 - Entity-Relationship Model (ERM)   
 E2 - Relational Model                  
 E3 - SQL Queries
