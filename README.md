@@ -1,7 +1,7 @@
 # Projetos
 Here are all the projects I've done throughout my course in Computer Engineering (java, SQL, PL/SQL)
 
-- JRPG (an rpg game)
+- JRPG (before college)
   Developed a console-based RPG applying object-oriented design principles
   Implemented player movement on a map with NPC interactions and side quests
   Designed combat mechanics including enemy logic, inventory system and treasure handling
