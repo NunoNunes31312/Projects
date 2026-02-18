@@ -1,7 +1,7 @@
 # Projetos
 Here are all the projects I've done throughout my course in Computer Engineering (java, SQL, PL/SQL)
 
-- JRPG (before college)
+- JRPG (before college):
   Developed a console-based RPG applying object-oriented design principles
   Implemented player movement on a map with NPC interactions and side quests
   Designed combat mechanics including enemy logic, inventory system and treasure handling
@@ -9,20 +9,20 @@ Here are all the projects I've done throughout my course in Computer Engineering
   (images not included)
 
 1st year 1st semester  :  
-- Sumdoku part 1 and 2  
+- Sumdoku part 1 and 2:  
   Built a rule-based Sudoku game with additional group-sum constraints
   Designed multiple classes to separate validation, board logic and game rules
   Applied object modeling principles to enforce constraint consistency
 
 1st year 2nd semester  :  
-- HanoiGame
+- HanoiGame:
   Developed a priority-based print job scheduler
   Implemented job queue handling using enumerations and appropriate data structures
   Managed file I/O operations and structured output formatting
-- Printers
+- Printers:
   Implemented employee parking management using HashMap-based data structures
   Designed class structure to manage tier-based space allocation
-- EstacionamentoAlunos      
+- EstacionamentoAlunos:      
   Implemented the Tower of Hanoi algorithm using stack-based data structures (ArrayStack / LinkedStack)
   Applied recursive logic and data structure manipulation to solve the problem efficiently
 
