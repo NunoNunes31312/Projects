@@ -6,6 +6,7 @@ Here are all the projects I've done throughout my course in Computer Engineering
   Implemented player movement on a map with NPC interactions and side quests
   Designed combat mechanics including enemy logic, inventory system and treasure handling
   Structured the application using modular classes to ensure maintainability
+  (images not included)
 
 1st year 1st semester  :  
 - Sumdoku part 1 and 2  
