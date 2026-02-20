@@ -1,11 +1,10 @@
 # Projetos
 Here are all the projects I've done throughout my course in Computer Engineering (java, SQL, PL/SQL)
 
-- JRPG (before college):
-  Developed a console-based RPG applying object-oriented design principles
-  Implemented player movement on a map with NPC interactions and side quests
-  Designed combat mechanics including enemy logic, inventory system and treasure handling
-  Structured the application using modular classes to ensure maintainability
+RPG Game (Python / Pygame)
+ - Developed a modular RPG with map navigation, NPC interactions, combat system, inventory logic, and Pygame-based graphics
+ - Structured codebase using reusable OOP components and modular classes
+ - Integrated visual interface with game mechanics for a fully playable experience
   (images not included)
 
 1st year 1st semester  :  
