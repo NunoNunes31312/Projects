@@ -10,25 +10,25 @@ Here are all the projects I've done throughout my course in Computer Engineering
 
 1st year 1st semester  :  
 
-- Sumdoku part 1 and 2:  
-  Built a rule-based Sudoku game with additional group-sum constraints
-  Designed multiple classes to separate validation, board logic and game rules
-  Applied object modeling principles to enforce constraint consistency
+Sumdoku part 1 and 2:  
+ - Built a rule-based Sudoku game with additional group-sum constraints
+ - Designed multiple classes to separate validation, board logic and game rules
+ - Applied object modeling principles to enforce constraint consistency
 
 1st year 2nd semester  :  
 
-- HanoiGame:
-  Developed a priority-based print job scheduler
-  Implemented job queue handling using enumerations and appropriate data structures
-  Managed file I/O operations and structured output formatting
+HanoiGame:
+ - Developed a priority-based print job scheduler
+ - Implemented job queue handling using enumerations and appropriate data structures
+ - Managed file I/O operations and structured output formatting
   
-- Printers:
-  Implemented employee parking management using HashMap-based data structures
-  Designed class structure to manage tier-based space allocation
+Printers:
+ - Implemented employee parking management using HashMap-based data structures
+ - Designed class structure to manage tier-based space allocation
   
-- EstacionamentoAlunos:
-  Implemented the Tower of Hanoi algorithm using stack-based data structures (ArrayStack / LinkedStack)
-  Applied recursive logic and data structure manipulation to solve the problem efficiently
+EstacionamentoAlunos:
+ - Implemented the Tower of Hanoi algorithm using stack-based data structures (ArrayStack / LinkedStack)
+ - Applied recursive logic and data structure manipulation to solve the problem efficiently
 
 2nd year 1st semester (SQL, PL/SQL):
 Information Systems and Databases (SIBD):
