@@ -11,7 +11,7 @@
  - Designed multiple classes to separate validation, board logic and game rules
  - Applied object modeling principles to enforce constraint consistency
 
-#### Database Systems (SQL / PL-SQL) E1-4:
+#### Database Systems (SQL / PL-SQL):
  
 - Designed Entity-Relationship (ER) model for a structured database system        
 - Transformed conceptual model into relational schema enforcing primary/foreign keys and integrity constraints (UNIQUE, NOT NULL).               
@@ -23,8 +23,7 @@
 ### Additional Projects
 
 HanoiGame:
- - Developed a priority-based print job scheduler
- - Implemented job queue handling using enumerations and appropriate data structures
+ - Developed a priority-based print job scheduler with queue management using enums and efficient data structures
  - Managed file I/O operations and structured output formatting
   
 Printers:
