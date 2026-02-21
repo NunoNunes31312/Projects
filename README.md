@@ -11,20 +11,12 @@
  - Designed multiple classes to separate validation, board logic and game rules
  - Applied object modeling principles to enforce constraint consistency
 
-#### Information Systems and Databases (SIBD):
-
- E1 - Entity-Relationship Model (ERM)  
-- Designed Entity-Relationship (ER) model for a structured database system
-         
- E2 - Relational Model          
-- Transformed conceptual model into relational schema enforcing primary/foreign keys and integrity constraints (UNIQUE, NOT NULL).          
-
- E3 - SQL Queries      
+#### Database Systems (SQL / PL-SQL) E1-4:
+ 
+- Designed Entity-Relationship (ER) model for a structured database system        
+- Transformed conceptual model into relational schema enforcing primary/foreign keys and integrity constraints (UNIQUE, NOT NULL).               
 - Developed advanced SQL queries involving LEFT/RIGHT/FULL OUTER JOIN, set operations (UNION, INTERSECT, EXCEPT), aggregations functions and nested subqueries    
-
- E4 - PL/SQL
 - Implemented stored procedures and functions for data manipulation
-- Applied exception handling mechanisms to ensure robust transaction control
 
 ---
 
