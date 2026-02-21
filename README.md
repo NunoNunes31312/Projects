@@ -1,17 +1,17 @@
 # Main Projects 
 
-RPG Game (Python / Pygame)
+####RPG Game (Python / Pygame)
  - Developed a modular RPG with map navigation, NPC interactions, combat system, inventory logic, and Pygame-based graphics
  - Structured codebase using reusable OOP components and modular classes
  - Integrated visual interface with game mechanics for a fully playable experience
   (images not included)
 
-Sumdoku part 1 and 2:  
+####Sumdoku part 1 and 2:  
  - Built a rule-based Sudoku game with additional group-sum constraints
  - Designed multiple classes to separate validation, board logic and game rules
  - Applied object modeling principles to enforce constraint consistency
 
-Information Systems and Databases (SIBD):
+####Information Systems and Databases (SIBD):
 
 E1 - Entity-Relationship Model (ERM)  
 - Designed Entity-Relationship (ER) model for a structured database system
@@ -25,7 +25,7 @@ E4 - PL/SQL
 
 ---
 
-#### Additional Projects
+### Additional Projects
 
 HanoiGame:
  - Developed a priority-based print job scheduler
