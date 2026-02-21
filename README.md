@@ -13,13 +13,16 @@
 
 #### Information Systems and Databases (SIBD):
 
-E1 - Entity-Relationship Model (ERM)  
-- Designed Entity-Relationship (ER) model for a structured database system          
-E2 - Relational Model          
+ E1 - Entity-Relationship Model (ERM)  
+- Designed Entity-Relationship (ER) model for a structured database system
+         
+ E2 - Relational Model          
 - Transformed conceptual model into relational schema enforcing primary/foreign keys and integrity constraints (UNIQUE, NOT NULL).          
-E3 - SQL Queries      
+
+ E3 - SQL Queries      
 - Developed advanced SQL queries involving LEFT/RIGHT/FULL OUTER JOIN, set operations (UNION, INTERSECT, EXCEPT), aggregations functions and nested subqueries    
-E4 - PL/SQL
+
+ E4 - PL/SQL
 - Implemented stored procedures and functions for data manipulation
 - Applied exception handling mechanisms to ensure robust transaction control
 
