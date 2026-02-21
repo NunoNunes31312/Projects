@@ -25,7 +25,7 @@ E4 - PL/SQL
 
 ---
 
-### Additional Projects
+#### Additional Projects
 
 HanoiGame:
  - Developed a priority-based print job scheduler
